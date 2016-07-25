@@ -351,12 +351,12 @@ The top level \ac{ACCPL} production is the \syn{<agreement>}. An agreement expre
 
 % agreement
 \lstset{language=AST}
-\begin{minipage}[c]{0.95\textwidth}
+%\begin{minipage}[c]{0.95\textwidth}
 \begin{lstlisting}[frame=single, caption={agreement},label={lst:agreementast}]
 <agreement> ::= 
      'agreement' 'for' <prin> 'about' <asset> 'with' <policySet> 
 \end{lstlisting}
-\end{minipage} 
+%\end{minipage} 
 
 Principals (\syn{<prin>}) are composed of \syn{<subject>}s which are specified based on the application e.g. \syn{Alice}, \syn{Bob}, etc (see listing~\ref{lst:prinast}).
 
@@ -374,31 +374,30 @@ Assets are also application specific and we will continue using specific ones fo
 \begin{lstlisting}[frame=single, caption={asset},label={lst:assetast}]
 <asset> ::= TheReport | ebook | latestJingle | ...
 \end{lstlisting}
-%
-%Subjects are treated similarly to assets. We will use specific subjects like \syn{Alice} and \syn{Bob} (see listing~\ref{lst:subjectast}).
-%
-%% subject
-%\lstset{mathescape, language=AST}  
-%\begin{lstlisting}[frame=single, caption={subject},label={lst:subjectast}]
-%<subject> ::= Alice | Bob | ...
-%\end{lstlisting}
-%
-%Agreements express who may perform an action on an asset. They include a set of subjects (in the form of a principal), an asset and a policy set. A policy set is a primitive policy set implying non-nested policy sets. Note that we could define various combining operators for policy sets such as conjunctions and disjunctions but we keep \ac{ACCPL}'s policy sets limited to the primitive kind and their conjunctions. We do however, use a combining operator when it comes to dealing with policies later on. Each primitive policy set specifies a \syn{<prerequisite>} and a \syn{<policy>}. Intuitively if the prerequisite ``holds'' the policy is taken into consideration. Otherwise the policy will not be looked at (see listing~\ref{lst:policySetast}).
-%
-%
-%% policySet
-%\newcommand*{\Comment}[1]{\hfill\makebox[7.0cm][l]{#1}}%
-%\lstset{mathescape, language=AST, escapechar=\&}  
-%\begin{minipage}[c]{0.95\textwidth}
-%\begin{lstlisting}[frame=single, caption={policySet and primPolicySet},label={lst:policySetast}]
-%<policySet> ::=  
-%   <primPolicySet>	&\Comment{; primitive policy set }&
-%   
-%<primPolicySet> ::=  
-%    <primInclusivePolicySet>	&\Comment{; primitive inclusive policy set }&
-% |  <primExclusivePolicySet>	&\Comment{; primitive exclusive policy set }&
-%\end{lstlisting}
-%\end{minipage}
+
+Subjects are treated similarly to assets. We will use specific subjects like \syn{Alice} and \syn{Bob} (see listing~\ref{lst:subjectast}).
+
+% subject
+\lstset{mathescape, language=AST}  
+\begin{lstlisting}[frame=single, caption={subject},label={lst:subjectast}]
+<subject> ::= Alice | Bob | ...
+\end{lstlisting}
+
+Agreements express who may perform an action on an asset. They include a set of subjects (in the form of a principal), an asset and a policy set. A policy set is a primitive policy set implying non-nested policy sets. Note that we could define various combining operators for policy sets such as conjunctions and disjunctions but we keep \ac{ACCPL}'s policy sets limited to the primitive kind and their conjunctions. We do however, use a combining operator when it comes to dealing with policies later on. Each primitive policy set specifies a \syn{<prerequisite>} and a \syn{<policy>}. Intuitively if the prerequisite ``holds'' the policy is taken into consideration. Otherwise the policy will not be looked at (see listing~\ref{lst:policySetast}).
+
+
+% policySet
+\newcommand*{\Comment}[1]{\hfill\makebox[5.0cm][l]{#1}}%
+\lstset{mathescape, language=AST, escapechar=\&}  
+\begin{minipage}[c]{0.95\textwidth}
+\begin{lstlisting}[frame=single, caption={policySet and primPolicySet},label={lst:policySetast}]
+<policySet> ::=  
+  <primPolicySet> &\Comment{; primitive policy set}&
+<primPolicySet> ::=  
+   <primInclusivePolicySet> &\Comment{; primitive inclusive policy set}&
+  |<primExclusivePolicySet> &\Comment{; primitive exclusive policy set}&
+\end{lstlisting}
+\end{minipage}
 %
 %Some primitive policy sets are specified as inclusive as opposed to others that are explicitly specified as exclusive. Primitive exclusive policy sets are exclusive to an agreement's users in that only those users may perform the actions specified in the policy set. The implication is that all other users who are not specified in the agreement's principal are forbidden from performing the specified actions, no matter whether the prerequisite holds or not (see listing~\ref{lst:primExclusivePolicySetast}).
 %
