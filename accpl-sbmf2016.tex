@@ -514,6 +514,45 @@ Both \syn{primInclusivePolicySet} and \syn{primExclusivePolicySet} types are con
 A \syn{policy} is defined as a datatype with the constructor \syn{Policy} which takes a nonempty list of primitive policies, or \syn{primPolicy}s. A \syn{primPolicy} is constructed by calling \syn{PrimitivePolicy} which takes a prerequisite, \syn{preRequisite}, a policy identifier, \syn{policyId}, and an action, \syn{act} (see listing~\ref{lst:primPolicyast} for the abstract syntax version). Ignoring the \syn{policyId} for a moment, a primitive policy consists of a prerequisite and an action. Intuitively if the prerequisite holds, the action is allowed to be performed on the asset. 
 
 
+\lstset{language=Coq}
+\begin{minipage}[c]{0.95\textwidth}
+\begin{lstlisting}[frame=single, caption={ACCPL: Coq Version of Agreement},label={lst:agreementcoq}]
+Inductive agreement : Set :=
+  | Agreement : prin -> asset -> policySet -> agreement.
+
+Definition prin := nonemptylist subject.
+
+Definition asset := nat.
+
+Definition subject := nat.
+
+Definition act := nat.
+
+Definition policyId := nat.
+
+Inductive policySet : Set :=
+  | PPS : primPolicySet -> policySet.
+  
+Inductive primPolicySet : Set :=
+  | PIPS : primInclusivePolicySet -> primPolicySet
+  | PEPS : primExclusivePolicySet -> primPolicySet.
+
+Inductive primInclusivePolicySet : Set :=
+  | PrimitiveInclusivePolicySet : preRequisite -> policy -> primInclusivePolicySet.
+
+Inductive primExclusivePolicySet : Set :=
+  | PrimitiveExclusivePolicySet : preRequisite -> policy  -> primExclusivePolicySet.
+
+Inductive policy : Set :=
+  | Policy : nonemptylist primPolicy -> policy.
+
+Inductive primPolicy : Set :=
+  | PrimitivePolicy : preRequisite -> policyId -> act -> primPolicy.
+
+\end{lstlisting}
+\end{minipage}
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%\blindtext\todo{Refine me}
 
