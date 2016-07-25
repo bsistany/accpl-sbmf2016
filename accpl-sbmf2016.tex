@@ -475,18 +475,18 @@ In \ac{ACCPL} a \syn{<primPrerequisite>} is either True or it is a \syn{<constra
     <primPrerequisite$_{m}$> ] &\Comment{; conjunction }&
 \end{lstlisting}
 
-%Constraints are either of the principal kind, the count kind, or the count by principle kind. Principal constraints require matching to the users listed following the keyword \syn{<prin>}. For example, the constraint of ``the user being Alice'' is a constraint of type principal. A count constraint refers to the number of times the user of an agreement has invoked policies to justify her actions. If the count constraint is part of a policy then the count refers to that single policy. In the case that the count constraint is part of a policy set or if the policy is a conjunction, then the count refers to the set of policies specified in the policy set or in the policy conjunction as the case may be (see listing~\ref{lst:constraintast}).
-%
-%% constraint
-%\lstset{mathescape, language=AST, escapechar=\&}  
-%\begin{minipage}[c]{0.95\textwidth}
-%\begin{lstlisting}[frame=single, caption={constraint},label={lst:constraintast}]
-%<constraint> ::=  
-%       <prin> &\Comment{; principal}&
-%    |  'Count' [N] &\Comment{; number of executions}&
-%    |  <prin> ('Count' [N]) &\Comment{; number of executions by prin}&
-%\end{lstlisting}
-%\end{minipage}
+Constraints are either of the principal kind, the count kind, or the count by principle kind. Principal constraints require matching to the users listed following the keyword \syn{<prin>}. For example, the constraint of ``the user being Alice'' is a constraint of type principal. A count constraint refers to the number of times the user of an agreement has invoked policies to justify her actions. If the count constraint is part of a policy then the count refers to that single policy. In the case that the count constraint is part of a policy set or if the policy is a conjunction, then the count refers to the set of policies specified in the policy set or in the policy conjunction as the case may be (see listing~\ref{lst:constraintast}).
+
+% constraint
+\lstset{mathescape, language=AST, escapechar=\&}  
+\begin{minipage}[c]{0.95\textwidth}
+\begin{lstlisting}[frame=single, caption={constraint},label={lst:constraintast}]
+<constraint> ::=  
+    <prin> &\Comment{; principal}&
+  |  'Count' [N] &\Comment{; number of executions}&
+  |  <prin> ('Count' [N]) &\Comment{; number of executions by prin}&
+\end{lstlisting}
+\end{minipage}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%\blindtext\todo{Refine me}
