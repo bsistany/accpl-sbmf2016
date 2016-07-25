@@ -435,45 +435,46 @@ A policy is made up of primitive policies. Primitive policies are grouped togeth
 
 % policy
 \lstset{mathescape, language=AST, escapechar=\&}  
-\begin{minipage}[c]{0.95\textwidth}
+%\begin{minipage}[c]{0.95\textwidth}
 \begin{lstlisting}[frame=single, caption={policy},label={lst:policyast}]
 <policy> ::=  
   'and'[ <primPolicy$_{1}$>, ..., 
       <primPolicy$_{m}$> ] &\CommentPP{; conjunction}&
 \end{lstlisting}
-\end{minipage}
-%
-%Similar to assets and subjects, actions are application specific and we use specific ones taken from~\cite{pucella2006} such as \syn{Display} and \syn{Print} (see listing~\ref{lst:actast}).
-%
-%% act
-%\lstset{mathescape, language=AST}  
-%\begin{lstlisting}[frame=single, caption={act},label={lst:actast}]
-%<act> ::= Play | Print | Display | ...
-%\end{lstlisting}
-%
-%A policy identifier (\syn{<policyId>}) is a unique identifier specified as (increasing) positive integers (see listing~\ref{lst:policyIdast}).
-%
-%% id
-%\lstset{mathescape, language=AST}  
-%\begin{lstlisting}[frame=single, caption={policyId},label={lst:policyIdast}]
-%<policyId> ::= N
-%\end{lstlisting}
-%
-%In \ac{ACCPL} a \syn{<primPrerequisite>} is either True or it is a \syn{<constraint>}. The True prerequisite always holds. A constraint is an intrinsic part of a policy and cannot be influenced by agreement's users. Minimum height requirements for popular attractions and rides are examples of what we would consider a constraint (although not supported in \ac{ACCPL}). A constraint can also be negative, specified by the keyword `not' in front of \syn{<constraint>}. A \syn{<prerequisite>} is a set of primitive prerequisites which are closed under conjunction operator specified by the keyword `and' in front of the list of the primitive prerequisites separated by commas (see listing~\ref{lst:preRequisiteast}).
-%
-%% prq
-%
-%\lstset{mathescape, language=AST, escapechar=\&}  
-%\begin{lstlisting}[frame=single, caption={prerequisite},label={lst:preRequisiteast}]
-%<primPrerequisite> ::=  
-%       'True' &\Comment{; always true}&
-%    |  <constraint>	 &\Comment{; constraint}&
-%    |  'not' [ <constraint> ] &\Comment{; suspending constraint}&
-%    
-%<prerequisite> ::=    
-%    |  'and'[ <primPrerequisite$_{1}$>, ..., <primPrerequisite$_{m}$> ] &\Comment{; conjunction }&
-%\end{lstlisting}
-%
+%\end{minipage}
+
+Similar to assets and subjects, actions are application specific and we use specific ones taken from~\cite{pucella2006} such as \syn{Display} and \syn{Print} (see listing~\ref{lst:actast}).
+
+% act
+\lstset{mathescape, language=AST}  
+\begin{lstlisting}[frame=single, caption={act},label={lst:actast}]
+<act> ::= Play | Print | Display | ...
+\end{lstlisting}
+
+A policy identifier (\syn{<policyId>}) is a unique identifier specified as (increasing) positive integers (see listing~\ref{lst:policyIdast}).
+
+% id
+\lstset{mathescape, language=AST}  
+\begin{lstlisting}[frame=single, caption={policyId},label={lst:policyIdast}]
+<policyId> ::= N
+\end{lstlisting}
+
+In \ac{ACCPL} a \syn{<primPrerequisite>} is either True or it is a \syn{<constraint>}. The True prerequisite always holds. A constraint is an intrinsic part of a policy and cannot be influenced by agreement's users. Minimum height requirements for popular attractions and rides are examples of what we would consider a constraint (although not supported in \ac{ACCPL}). A constraint can also be negative, specified by the keyword `not' in front of \syn{<constraint>}. A \syn{<prerequisite>} is a set of primitive prerequisites which are closed under conjunction operator specified by the keyword `and' in front of the list of the primitive prerequisites separated by commas (see listing~\ref{lst:preRequisiteast}).
+
+% prq
+
+\lstset{mathescape, language=AST, escapechar=\&}  
+\begin{lstlisting}[frame=single, caption={prerequisite},label={lst:preRequisiteast}]
+<primPrerequisite> ::=  
+    'True' &\Comment{; always true}&
+  |  <constraint>	 &\Comment{; constraint}&
+  |  'not' [ <constraint> ] &\Comment{; suspending constraint}&
+    
+<prerequisite> ::=    
+  |  'and'[ <primPrerequisite$_{1}$>, ..., 
+    <primPrerequisite$_{m}$> ] &\Comment{; conjunction }&
+\end{lstlisting}
+
 %Constraints are either of the principal kind, the count kind, or the count by principle kind. Principal constraints require matching to the users listed following the keyword \syn{<prin>}. For example, the constraint of ``the user being Alice'' is a constraint of type principal. A count constraint refers to the number of times the user of an agreement has invoked policies to justify her actions. If the count constraint is part of a policy then the count refers to that single policy. In the case that the count constraint is part of a policy set or if the policy is a conjunction, then the count refers to the set of policies specified in the policy set or in the policy conjunction as the case may be (see listing~\ref{lst:constraintast}).
 %
 %% constraint
