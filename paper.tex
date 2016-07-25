@@ -1,0 +1,544 @@
+%"runningheads" enables:
+%  - page number on page 2 onwards
+%  - title/authors on even/odd pages
+%This is good for other readers to enable proper archiving among other papers and pointing to content.
+%Even if the title page states the title, when printed and stored in a folder, when blindly opening the folder, one could hit not the title page, but an arbitrary page. Therefore, it is good to have title printed on the pages, too.
+\documentclass[runningheads,a4paper]{llncs}
+
+%Even though `american`, `english` and `USenglish` are synonyms for babel package (according to https://tex.stackexchange.com/questions/12775/babel-english-american-usenglish), the llncs document class is prepared to avoid the overriding of certain names (such as "Abstract." -> "Abstract" or "Fig." -> "Figure") when using `english`, but not when using the other 2.
+\usepackage[english]{babel}
+
+
+%better font, similar to the default springer font
+%cfr-lm is preferred over lmodern. Reasoning at http://tex.stackexchange.com/a/247543/9075
+\usepackage[%
+rm={oldstyle=false,proportional=true},%
+sf={oldstyle=false,proportional=true},%
+tt={oldstyle=false,proportional=true,variable=true},%
+qt=false%
+]{cfr-lm}
+%
+%if more space is needed, exchange cfr-lm by mathptmx
+%\usepackage{mathptmx}
+
+\usepackage{graphicx}
+
+%extended enumerate, such as \begin{compactenum}
+\usepackage{paralist}
+
+%put figures inside a text
+%\usepackage{picins}
+%use
+%\piccaptioninside
+%\piccaption{...}
+%\parpic[r]{\includegraphics ...}
+%Text...
+
+%Sorts the citations in the brackets
+%\usepackage{cite}
+
+\usepackage[T1]{fontenc}
+
+%for demonstration purposes only
+\usepackage[math]{blindtext}
+
+%for easy quotations: \enquote{text}
+\usepackage{csquotes}
+
+%enable margin kerning
+\usepackage{microtype}
+
+%tweak \url{...}
+\usepackage{url}
+%nicer // - solution by http://tex.stackexchange.com/a/98470/9075
+\makeatletter
+\def\Url@twoslashes{\mathchar`\/\@ifnextchar/{\kern-.2em}{}}
+\g@addto@macro\UrlSpecials{\do\/{\Url@twoslashes}}
+\makeatother
+\urlstyle{same}
+%improve wrapping of URLs - hint by http://tex.stackexchange.com/a/10419/9075
+\makeatletter
+\g@addto@macro{\UrlBreaks}{\UrlOrds}
+\makeatother
+
+%diagonal lines in a table - http://tex.stackexchange.com/questions/17745/diagonal-lines-in-table-cell
+%slashbox is not available in texlive (due to licensing) and also gives bad results. This, we use diagbox
+%\usepackage{diagbox}
+
+%required for pdfcomment later
+\usepackage{xcolor}
+
+% new packages BEFORE hyperref
+% See also http://tex.stackexchange.com/questions/1863/which-packages-should-be-loaded-after-hyperref-instead-of-before
+
+%enable hyperref without colors and without bookmarks
+\usepackage[
+%pdfauthor={},
+%pdfsubject={},
+%pdftitle={},
+%pdfkeywords={},
+bookmarks=false,
+breaklinks=true,
+colorlinks=true,
+linkcolor=black,
+citecolor=black,
+urlcolor=black,
+%pdfstartpage=19,
+pdfpagelayout=SinglePage,
+pdfstartview=Fit
+]{hyperref}
+%enables correct jumping to figures when referencing
+\usepackage[all]{hypcap}
+
+%enable nice comments
+\usepackage{pdfcomment}
+\newcommand{\commentontext}[2]{\colorbox{yellow!60}{#1}\pdfcomment[color={0.234 0.867 0.211},hoffset=-6pt,voffset=10pt,opacity=0.5]{#2}}
+\newcommand{\commentatside}[1]{\pdfcomment[color={0.045 0.278 0.643},icon=Note]{#1}}
+
+%compatibality with TODO package
+\newcommand{\todo}[1]{\commentatside{#1}}
+
+%enable \cref{...} and \Cref{...} instead of \ref: Type of reference included in the link
+\usepackage[capitalise,nameinlink]{cleveref}
+%Nice formats for \cref
+\crefname{section}{Sect.}{Sect.}
+\Crefname{section}{Section}{Sections}
+
+\usepackage{xspace}
+%\newcommand{\eg}{e.\,g.\xspace}
+%\newcommand{\ie}{i.\,e.\xspace}
+\newcommand{\eg}{e.\,g.,\ }
+\newcommand{\ie}{i.\,e.,\ }
+
+\newcommand{\syn}{\texttt}
+
+%%%%%% Languages
+\usepackage{listings,lstautogobble}
+\usepackage{syntax}
+%\usepackage{lstcoq}
+\usepackage{url}
+
+\usepackage{algorithm}
+\usepackage{algorithmic}
+
+\lstdefinelanguage{XML}
+{
+  basicstyle=\ttfamily,
+  frame=single,
+  breaklines=true,
+  morestring=[s]{"}{"},
+  morecomment=[s]{?}{?},
+  morecomment=[s]{!--}{--},
+  commentstyle=\color{black},
+  moredelim=[s][\color{black}]{>}{<},
+  moredelim=[s][\color{black}]{\ }{=},
+  stringstyle=\color{black},
+  identifierstyle=\color{black},
+  autogobble=true
+}
+\lstdefinelanguage{Pucella2006}
+{
+  morekeywords={
+    agreement, prin, asset, with, prePay, and, display, print, count
+  }
+}
+\lstdefinelanguage{selinux}
+{
+  morekeywords={
+    type, types, attrib, role, allow, user, constrain, avkind, 
+	sourcetype, targettype, object-class, perm, allow, auditallow, dontaudit, neverallow,
+	constrain, classes, perms, sourcetype, sourcerole, sourceuser, targettype, targetrole, targetuser
+  }
+}
+
+\lstdefinelanguage{AST}
+{
+  basicstyle=\ttfamily,
+  breaklines=true,
+  morekeywords={
+    agreement, prin, asset, subject, policySet, policy, act, policyId, preRequisite 
+  }
+  tabsize=1,
+}
+
+\newtheorem{innercustomthm}{Theorem}
+\newenvironment{customthm}[1]
+  {\renewcommand\theinnercustomthm{#1}\innercustomthm}
+  {\endinnercustomthm}
+
+
+%%%%%% Languages
+
+%introduce \powerset - hint by http://matheplanet.com/matheplanet/nuke/html/viewtopic.php?topic=136492&post_id=997377
+\DeclareFontFamily{U}{MnSymbolC}{}
+\DeclareSymbolFont{MnSyC}{U}{MnSymbolC}{m}{n}
+\DeclareFontShape{U}{MnSymbolC}{m}{n}{
+    <-6>  MnSymbolC5
+   <6-7>  MnSymbolC6
+   <7-8>  MnSymbolC7
+   <8-9>  MnSymbolC8
+   <9-10> MnSymbolC9
+  <10-12> MnSymbolC10
+  <12->   MnSymbolC12%
+}{}
+\DeclareMathSymbol{\powerset}{\mathord}{MnSyC}{180}
+
+% correct bad hyphenation here
+\hyphenation{op-tical net-works semi-conduc-tor}
+\usepackage{acro}
+
+\input{list-of-acronyms}
+
+\begin{document}
+
+%Works on MiKTeX only
+%hint by http://goemonx.blogspot.de/2012/01/pdflatex-ligaturen-und-copynpaste.html
+%also http://tex.stackexchange.com/questions/4397/make-ligatures-in-linux-libertine-copyable-and-searchable
+%This allows a copy'n'paste of the text from the paper
+\input glyphtounicode.tex
+\pdfgentounicode=1
+
+\title{A Certified Core Policy Language}
+%If Title is too long, use \titlerunning
+%\titlerunning{Short Title}
+
+%Single insitute
+\author{Bahman Sistany \and Amy Felty}
+%If there are too many authors, use \authorrunning
+%\authorrunning{First Author et al.}
+\institute{School of Electrical Engineering and Computer Science, University of Ottawa, Canada}
+
+%Multiple insitutes
+%Currently disabled
+%
+\iffalse
+%Multiple institutes are typeset as follows:
+\author{Firstname Lastname\inst{1} \and Firstname Lastname\inst{2} }
+%If there are too many authors, use \authorrunning
+%\authorrunning{First Author et al.}
+
+\institute{
+Insitute 1\\
+\email{...}\and
+Insitute 2\\
+\email{...}
+}
+\fi
+			
+\maketitle
+
+\begin{abstract}
+We present the design and implementation of a Certified Core Policy Language (ACCPL) that can be used to express access-control policies. We define formal semantics for ACCPL where we discover and enumerate all possible cases when answering an access query. We use the Coq Proof Assistant to state theorems about the semantics of ACCPL, to develop proofs for those theorems and to machine-check the proofs ensuring correctness guarantees are provided. The main design goal for ACCPL is the ability to reason about the policies written in ACCPL with respect to specific questions. In addition ACCPL is designed to be extendable so that extensions to expressive power may be explored with respect to the established reasonability properties.  To this end, ACCPL is small (the syntax and the semantics of ACCPL only take a few pages to describe), although we believe ACCPL supports the core features of access-control policy languages.
+\end{abstract}
+
+\keywords{program correctness, formal verification, access control,
+policy analysis, Coq, XACML, DRM, ODRL, SELinux}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Introduction}\label{sec:intro}
+In this thesis, we describe the design of a \ac{ACCPL} and its implementation in the Coq Proof Assistant. Using Coq to implement \ac{ACCPL} as it was being defined was an important factor in its design, allowing us to address the trade-off between expressive power and ease of formal proof of correctness. We argue that \ac{ACCPL} is significantly more amenable to analysis and reasoning than other access-control policy languages, while still retaining sufficient expressive power, and we describe how the design choices that were made contributed to this ease of reasoning. 
+
+The semantics of \ac{ACCPL} are specified by translation from policy statements together with an access request and an environment containing all relevant facts, to decisions. We present results showing the translation functions behave correctly with respect to the decision question that asks whether a request to access a resource may be granted or denied, given a policy. The translation functions also cover the case where a given policy does not apply to a request in which case a decision of non-applicable is rendered. Our results show that for each access request, the translation algorithm terminates on all input policies with a decision of granted, denied or non-applicable. Proving that the translation algorithm terminates on all input policies (given an access request) with a decision of granted, denied or non-applicable, is the specific goal based on which the semantics were defined. We further capture this property as a specification (expressed as an inductive predicate in Coq) and show how the translation algorithm meets this specification for a given policy. 
+
+To motivate the design of \ac{ACCPL}, we need to go back to the origins of access-control and review the progression of the models from the most basic and perhaps oldest to the model \ac{ACCPL} implements. We will start the review of access-control models based on the survey done in~\cite{nist}, in Section~\ref{sec:models}, but first the definition of ``access-control'' is in order.
+
+Authorization refers to the process of rendering a decision to allow access to a resource or asset of interest. By the same token all unauthorized access requests to resources must be controlled and ultimately denied, hence the term ``access-control''. 
+
+
+\section{Access Control Models}\label{sec:models}
+
+
+\ac{acl} is perhaps the oldest and the most basic access-control model. A list of subjects along with their rights are kept per resource or object of interest. Every time a subject makes an access request on an object, the \ac{acl} of the object is consulted and access is either granted or denied to the requester based on whether or not the requester is listed in the \ac{acl} and has the correct set of rights.
+
+Capabilities based access-control works based on a list of objects and associated rights. The list of objects and the associated rights comprise an ``unforgeable'' ticket that a reference monitor checks to allow access (or not). Capabilities based systems don't need to authenticate users as \ac{acl} based systems do.
+
+In \ac{rbac} systems a requester's role determines whether access is granted or denied. In this model, users belong to roles and rights are associated with roles so no direct association between users and rights exist. Roles are meant to group users and add flexibility when assigning rights. \ac{rbac} systems naturally solve the problem of assigning \ac{acl}s for a large group of users and manage the administration cost of changing users' rights in \ac{acl} based systems.
+
+
+Despite many advantages of \ac{rbac} systems, some disadvantages also exist. Often a role needs to be decomposed into sub-roles based on the type of resource to be administered, and perhaps also based on the location that the resource serves. Basically \ac{rbac} suffers from a lack of a sub-typing mechanism whereby individual members of a group/role may be differentiated and access is granted or denied based on a more granular set of attributes. The \ac{abac} model was proposed to fulfill this granularity requirement. In \ac{abac} access control decisions are made based on a set of attributes, associated with the subject making the request, the environment, and/or the resource itself. 
+
+In order to harmonize access control in large environments with many subjects and objects and disparate attributes, \ac{pbac} model has been proposed. \ac{pbac} allows for a more uniform access-control model across the system. \ac{pbac} systems help create and enforce policies
+that define who should have access to what resources, and under what circumstances.
+There is also a need for large organizations to put in place mechanisms such that access-control rules can be easily audited. This calls for a data-driven approach to access-control where the data, in this case the access-control rules, are available to read and analyze. A data-driven approach like \ac{pbac} additionally helps with modularity of the system as changes in access control rules will have almost no impact to the underlying system the rules are meant to protect.
+
+Because of the cited advantages of \ac{pbac} and its generality and wide spread use, \ac{pbac} is the model \ac{ACCPL} implements.
+
+\section{A Core Policy Language for PBAC Systems} 
+
+Does there already exist a suitable policy language that can be used for expressing general access-control expressions? How about \ac{xacml}~\cite{xacml3pdf}, \ac{odrl}~\cite{odrloneone} or \ac{xrml}~\cite{Wang}? 
+
+Currently the most popular \ac{rel}s are \ac{xrml}, and \ac{odrl}. Both of these languages are XML based and are considered declarative languages. \ac{xrml} has been selected by the the Moving Picture Experts Group, MPEG, to be the \ac{rel} for \emph{MPEG-21} which is an ISO standard for multimedia applications. \ac{odrl} is also a standards-based \ac{rel} which has been accepted as part of the W3C community with the mandate of standardizing how rights and policies, related to the usage of digital content on the Open Web Platform, \emph{OWP}~\cite{openwebplatform}, are expressed. \ac{odrl} 2.0 supports expression of rights and also privacy rules for social media while \ac{odrl} 1.0 was only dealing with the mobile ecosystem -- \ac{odrl} 1.0 was adopted by the Open Mobile Alliance, \emph{OMA} in 2000.
+
+\ac{rel}s, or more precisely \ac{drel}s when dealing with digital assets deal with the ``rights definition'' aspect of the \ac{drm} ecosystem. A \ac{drel}, allows the expression and definition of digital asset usage rights such that other areas of the \ac{drm} ecosystem, namely the enforcement mechanism and the usage tracking components can function correctly.
+
+As popular as both \ac{xrml} and \ac{odrl} are, their adoption and usage is still somewhat limited in practice. Both Apple and Microsoft for example have defined their own lightweight \ac{rel}s~\cite{problemwithrels} in FairPlay~\cite{fairplay} and in PlayReady~\cite{playready}. The authors of~\cite{problemwithrels} argue that both these \ac{rel}s (\ac{xrml} and \ac{odrl}) and others are simply too complex to be used effectively (for expressing rights) since they also try to cover much of the the enforcement and tracking aspects of \ac{drm}s.
+
+\ac{drm} refers to the digital management of rights associated with the access or usage of digital assets. There are various aspects of rights management however. According to the authors of the white paper ``A digital rights management ecosystem model for the education community''~\cite{collier} digital rights management systems cover the following four areas: 
+
+\begin{enumerate}
+  \item Defining rights 
+  \item Distributing/Acquiring rights 
+  \item Enforcing rights 
+  \item Tracking usage
+\end{enumerate}
+
+\ac{xacml} is a high-level and platform independent access control system that is also XML based. \ac{xacml} is an OASIS standard which defines a language for the definition of policies and access requests, and a workflow to achieve policy enforcement~\cite{DBLP:conf/essos/MasiPT12}. According to Masi et al~\cite{DBLP:conf/essos/MasiPT12} designing XACML access control policies is difficult and error prone. Furthermore \ac{xacml} comes without a formal semantics as do both \ac{xrml} and \ac{odrl}. The \ac{xacml} standard is written in prose and contains quite a number of loose points that may give rise to different interpretations and lead to different implementation choices~\cite{DBLP:conf/essos/MasiPT12}.
+
+\ac{xacml}, \ac{odrl} and \ac{xrml} are all \ac{pbac} based languages where \ac{odrl} and \ac{xrml} differ from \ac{xacml} by their focus on digital assets protection and in general \ac{drm}, hence the term \ac{rel}. All three are full-blown and custom languages that have one thing in common; they suffer from a lack of formal semantics. Additionally all of these languages cover much more than policy expressions leading to access decisions; they also address enforcement of policies (\ac{odrl} and \ac{xrml} specifically and \ac{drm} in general distinguish themselves from general access-control languages by additionally addressing enforcement of policies beyond where the policies were generated). A third reason that made these custom languages unsuitable as a core policy language was the fact that they are limited in terms of what can be built on top of them; for example expressing hierarchical role-based access-control  in \ac{xacml} requires a fairly complex encoding~\cite{Tschantz}.
+
+Rights expressions in \ac{drel}s and specifically \ac{odrl} are used to arbitrate access to assets under conditions. The main construct in \ac{odrl} is the ``agreement'' which specifies users, asset(s) and policies whereby controls on users' access to the assets are described. This is very similar to how access control conditions are expressed in access control policy languages such as \ac{xacml}~\cite{xacml} and \ac{selinux}~\cite{selinux}. In fact several authors have worked on interoperability between \ac{rel}s and access control policy languages, specifically between \ac{odrl} and \ac{xacml}~\cite{prados2005interoperability,maronas2009architecture} and also on translation from high level policies of \ac{xacml} to low-level and fine grained policies of \ac{selinux}~\cite{alam2008usage}. 
+
+A policy language that was designed with logic and formal semantics and also one that was small and extendible was clearly needed. We started by looking at Lithium~\cite{Halpern2008} and subsequently Pucella and Weissman's subset of \ac{odrl}~\cite{pucella2006} as potential core languages. Lithium uses \ac{drm} as the main application of its access-control system whereas Pucella and Weissman's primary goal is to define formal semantics for \ac{odrl} whose main application in turn is \ac{drm}. We will use Pucella and Weissman's subset of \ac{odrl} as the basis for \ac{ACCPL} and in doing so treat digital rights as our main access-control application without loss of generality with respect to other applications, with the final goal of performing formal verification on policies written in \ac{ACCPL}.
+
+
+
+%----------------------------------------------------------------------
+\section{Formal Semantics for PBAC Languages}
+%----------------------------------------------------------------------
+
+
+Formal methods help ensure that a system behaves correctly with respect to a specification of its desired behaviour~\cite{TAPL}. This specification of the desired behaviour is what's referred to as \emph{semantics} of the system. Using formal methods requires defining precise and formal semantics, without which analysis and reasoning about properties of the system in question would become impossible. For example, an issue with the current batch of \ac{rel}s are due to their semantics being expressed in a natural language (e.g. English) which by necessity results in ambiguous and open to interpretation behaviour. 
+
+To formalize the semantics of \ac{pbac} languages several approaches have been attempted by various authors. Most are logic based~\cite{Halpern2008,pucella2006} while others are based on finite-automata~\cite{Holzer}, operational semantics based interpreters~\cite{Safavi-naini} and web ontology (from the Knowledge Representation Field)~\cite{Kasten2010MTS}. 
+
+
+\section{Logic Based Semantics}
+
+%See equation \ref{eqn_pi} on page \pageref{eqn_pi}.\footnote{A famous %equation.}
+
+Formal logic can represent the statements and facts we express in a natural language like English. Propositional logic is expressive enough to express simple facts as propositions and uses connectives to allow for the negation, conjunction and disjunction of the facts. In addition simple facts can be expressed conditionally using the implication connective. Propositional logic however is not expressive enough to express policies of the kind used in languages like \ac{odrl} and \ac{xrml}. For example, a simple policy expressed in English like ``All who pay 5 dollars can watch the movie Toy Story'' cannot be expressed in propositional logic because the concept of quantifiers doesn't exist in propositional logic. 
+
+A richer logic such as ``First Order Logic'' (\emph{FOL}), is more suitable and has the expressive power to represent policies written in English. Moreover, FOL can be used to capture the meaning of policies in an unambiguous way.
+
+Halpern and Weissman~\cite{Halpern2008} propose a fragment of FOL to represent and reason about policies. The fragment of FOL they arrive at is called \emph{Lithium} which is decidable and allows for efficiently answering interesting queries. Lithium restricts policies to be written, in part based on the concept of ``bipolarity'' which disallows by construction policies that both permit and deny an action on an object. Pucella and Weissman~\cite{pucella2006} specify a predicate logic based language that represents a subset of ODRL.
+
+
+\section{Specific Problem}
+
+Policy languages and the agreements written in those languages are meant to implement specific goals such as limiting access to specific assets. The tension in designing a policy language is usually between how to make the language expressive enough, such that the design goals for the policy language may be expressed, and how to make the policies verifiable with respect to the stated goals.
+
+As stated earlier, an important part of fulfilling the verifiability goal is to have formal semantics defined for policy languages. For \ac{odrl}, authors of~\cite{pucella2006} have defined a formal semantics based on which they declare and prove a number of important theorems (their main focus is on stating and proving algorithm complexity results). However as with many paper-proofs, the language used to do the proofs while mathematical in nature, uses many intuitive justifications to show the proofs. As such these proofs are difficult to verify or more importantly to ``derive''. Furthermore the proofs can not be used directly to render a decision on a sample policy (e.g. whether to allow or deny access to an asset). Of course one may (carefully) construct a program based on these proofs for practical purposes but certifying such programs correct presents additional verification challenges, even assuming the original proofs were in fact correct.
+
+\section{Contributions}\label{sec:contribs}
+
+In this thesis we have built a language called \ac{ACCPL} based on \ac{odrl} and starting with definitions in~\cite{pucella2006}. The \ac{ACCPL} framework has been encoded in \emph{Coq}~\cite{BC04} which is both a programming language and a proof-assistant. We have specified and proved \ac{ACCPL} correct with respect to properties of interest (see section~\ref{sec:maintheorems}) in Coq which will allow us to extract programs from the proofs; the executable programs can be used on specific policies and a query, to render a specific decision such as ``a permission has been granted''. 
+
+We originally started with a specific subset of~\cite{pucella2006} so that we could concentrate on what we believed to be the essence or core of the language. For example, we started with only one of three different kinds of ``facts'' (that may affect the permit/deny type decisions). We also had to change some of the language productions to allow for Coq's requirement for clearly terminating recursion. Initially we intended to maintain the central semantic definitions including ``Closed World Assumptions''~\cite{pucella2006} where the semantics only specify explicitly Permitted and NotPermitted answers however we discovered the semantics as stated by Pucella and Weissman~\cite{pucella2006} are not explicit and therefore the decision question that asks whether a request to access a resource may be granted or denied, may not be answered in all cases. We have therefore made major modifications to the semantics of Pucella and Weissman's language such that an answer to a request for access to a resource may be determined unambiguously and for all cases. 
+    
+Our results subsume an important sub-category, namely inconsistency or conflict-detection in policy expressions or rules. St-Martin and Felty~\cite{felty16} describe and implement in Coq a conflict detection algorithm for detecting conflicts in \ac{xacml} access control rules. \ac{xacml} is an expressive and at the same time complex policy language which makes conflict detection a difficult task. The authors of~\cite{felty16} then prove the conflict detection algorithm correct (or certified) by developing a formal proof in Coq. The proof is rather complex and involves a large number of cases, including many corner cases that were difficult to get right~\cite{felty16}. For \ac{ACCPL} we have formally proven that conflicts are not possible.
+
+Given that \ac{ACCPL} is a core policy language with semantics that have been certified correct, we could use \ac{ACCPL} to implement various (more expressive) policy languages. In addition \ac{ACCPL} could be used as an intermediate language to reason about interoperability between those policy languages~\cite{prados2005interoperability,maronas2009architecture}. In this manner our language \ac{ACCPL} can be viewed as a extendable language, complete with defined and verified semantics, that can be used as the basis for implementing various policy languages with more expressive power (e.g. W3C's \ac{odrl} and \ac{selinux}). 
+
+For access to the Coq source code for \ac{ACCPL}, please refer to \url{http://www.site.uottawa.ca/~afelty/accpl/}.
+
+
+%% Coq Syntax chapter
+We follow the style of~\cite{pucella2006} by using abstract syntax to express policy statements in \ac{ACCPL}. Abstract syntax is a more compact representation than XML which is what all the XML-based policy languages such as \ac{odrl} use. Furthermore abstract syntax simplifies specifying the semantics as we shall see later. 
+
+In the following we will cover the abstract syntax of \ac{ACCPL} that we later implement in Coq using constructs such as inductive types and function definitions. 
+
+
+\section{Environmental Facts}\label{sec:odrl0}
+To determine the outcome of policies, specified conditions in those policies are evaluated but to do so environmental facts are often needed. In the \ac{drm} realm with its focus on usage control, certain facts are typically tracked in the environment. The count of how many times an asset has been accessed, the amount a user has paid to access an asset and finally whether a user has made an attribution (e.g. mentioning the content owner by name) are examples of the kind of facts environments hold.
+
+In \ac{ACCPL}, agreements and facts (i.e. environments) will refer to a count of how many times each policy should be used and has been used respectively, to justify an action. This is the only fact that \ac{ACCPL} will cover although we conjecture adding other simple facts such as attributions and ``amounts paid'' and the machinery to support those facts should not change the verification goals for \ac{ACCPL} and the established results in a significant way. We will defer to later in the thesis (see section~\ref{sec:missingreqs}), the discussion of how and whether more general and complex facts in the environment will impact \ac{ACCPL} and our verification results.   
+
+We will describe \ac{ACCPL} in a \emph{BNF} grammar that looks more like Pucella and Weissman's subset grammar~\cite{pucella2006}. BNF style grammars are more abstract as they only give suggestions about the surface syntax of expressions without getting into lexical analysis and parsing related aspects such as precedence order of operators~\cite{piercesf2011}. The Coq version in contrast is the encodings of the BNF definitions which is typically used for building compilers and interpreters. We will present both the BNF definition and its Coq encoding for each construct of \ac{ACCPL}. 
+
+\section{Productions} \label{sec:productionast}
+
+The top level \ac{ACCPL} production is the \syn{<agreement>}. An agreement expresses what actions a set of subjects may perform on an object and under what conditions. Syntactically an agreement is composed of a set of subjects called a principal or \syn{<prin>}, an \syn{<asset>} and a \syn{<policySet>} (see listing~\ref{lst:agreementast}).
+
+% agreement
+\lstset{language=AST}
+\begin{minipage}[c]{0.95\textwidth}
+\begin{lstlisting}[frame=single, caption={agreement},label={lst:agreementast}]
+<agreement> ::= 
+     'agreement' 'for' <prin> 'about' <asset> 'with' <policySet> 
+\end{lstlisting}
+\end{minipage} 
+
+Principals (\syn{<prin>}) are composed of \syn{<subject>}s which are specified based on the application e.g. \syn{Alice}, \syn{Bob}, etc (see listing~\ref{lst:prinast}).
+
+
+%% prin
+\lstset{mathescape, language=AST}  
+\begin{lstlisting}[frame=single, caption={prin},label={lst:prinast}]
+<prin> ::=  { <subject$_{1}$>, ..., <subject$_{m}$> }
+\end{lstlisting}
+
+Assets are also application specific and we will continue using specific ones for the \ac{drm} application (taken from~\cite{pucella2006}). \syn{TheReport}, \syn{ebook}, and \syn{latestJingle} are examples of specific assets we will be using throughout (see listing~\ref{lst:assetast}). 
+
+% asset
+\lstset{mathescape, language=AST}  
+\begin{lstlisting}[frame=single, caption={asset},label={lst:assetast}]
+<asset> ::= TheReport | ebook | latestJingle | ...
+\end{lstlisting}
+%
+%Subjects are treated similarly to assets. We will use specific subjects like \syn{Alice} and \syn{Bob} (see listing~\ref{lst:subjectast}).
+%
+%% subject
+%\lstset{mathescape, language=AST}  
+%\begin{lstlisting}[frame=single, caption={subject},label={lst:subjectast}]
+%<subject> ::= Alice | Bob | ...
+%\end{lstlisting}
+%
+%Agreements express who may perform an action on an asset. They include a set of subjects (in the form of a principal), an asset and a policy set. A policy set is a primitive policy set implying non-nested policy sets. Note that we could define various combining operators for policy sets such as conjunctions and disjunctions but we keep \ac{ACCPL}'s policy sets limited to the primitive kind and their conjunctions. We do however, use a combining operator when it comes to dealing with policies later on. Each primitive policy set specifies a \syn{<prerequisite>} and a \syn{<policy>}. Intuitively if the prerequisite ``holds'' the policy is taken into consideration. Otherwise the policy will not be looked at (see listing~\ref{lst:policySetast}).
+%
+%
+%% policySet
+%\newcommand*{\Comment}[1]{\hfill\makebox[7.0cm][l]{#1}}%
+%\lstset{mathescape, language=AST, escapechar=\&}  
+%\begin{minipage}[c]{0.95\textwidth}
+%\begin{lstlisting}[frame=single, caption={policySet and primPolicySet},label={lst:policySetast}]
+%<policySet> ::=  
+%   <primPolicySet>	&\Comment{; primitive policy set }&
+%   
+%<primPolicySet> ::=  
+%    <primInclusivePolicySet>	&\Comment{; primitive inclusive policy set }&
+% |  <primExclusivePolicySet>	&\Comment{; primitive exclusive policy set }&
+%\end{lstlisting}
+%\end{minipage}
+%
+%Some primitive policy sets are specified as inclusive as opposed to others that are explicitly specified as exclusive. Primitive exclusive policy sets are exclusive to an agreement's users in that only those users may perform the actions specified in the policy set. The implication is that all other users who are not specified in the agreement's principal are forbidden from performing the specified actions, no matter whether the prerequisite holds or not (see listing~\ref{lst:primExclusivePolicySetast}).
+%
+%% primExclusivePolicySet
+%\lstset{mathescape, language=AST, escapechar=\&}  
+%\begin{lstlisting}[frame=single, caption={primExclusivePolicySet},label={lst:primExclusivePolicySetast}]
+%<primExclusivePolicySet> ::=  
+%   <prerequisite> $\mapsto$ <policy>	&\Comment{; primitive exclusive policy set }&
+%\end{lstlisting}
+%
+%Not surprisingly we also define primitive inclusive policy sets that don't enforce any exclusivity to the agreement's users (see listing~\ref{lst:primInclusivePolicySetast}).
+%
+%% primInclusivePolicySet
+%\lstset{mathescape, language=AST, escapechar=\&}  
+%\begin{lstlisting}[frame=single, caption={primInclusivePolicySet},label={lst:primInclusivePolicySetast}]
+%<primInclusivePolicySet> ::=  
+%   <prerequisite> $\rightarrow$ <policy>	&\Comment{; primitive inclusive policy set }&
+%\end{lstlisting}
+%
+%
+%A primitive policy specifies an action to be performed on an asset, depending on whether the policy's prerequisite holds or not. If the prerequisite holds the agreement's user is permitted to perform the action on the agreement's asset; otherwise permission is denied. Pucella and Weissman's subset of \ac{odrl}~\cite{pucella2006} specifies a unique identifier for each policy to help the translation (from agreements to formulas). \ac{ACCPL} has maintained the policy identifier and we include it here in our definition of the policy construct, however, as far as the proofs are concerned the policy identifier could be removed without a loss to the obtained results (see listing~\ref{lst:primPolicyast}).
+%
+%% primitive policy
+%
+%\lstset{mathescape, language=AST, escapechar=\&}  
+%\begin{minipage}[c]{0.95\textwidth}
+%\begin{lstlisting}[frame=single, caption={primPolicy},label={lst:primPolicyast}]
+%<primPolicy> ::=  
+%   <prerequisite> $\Rightarrow_{<policyId>}$ <act> 	&\Comment{; primitive policy}&
+%\end{lstlisting}
+%\end{minipage}
+%
+%A policy is made up of primitive policies. Primitive policies are grouped together using the conjunction combining operator (see listing~\ref{lst:policyast}).
+%
+%% policy
+%\lstset{mathescape, language=AST, escapechar=\&}  
+%\begin{minipage}[c]{0.95\textwidth}
+%\begin{lstlisting}[frame=single, caption={policy},label={lst:policyast}]
+%<policy> ::=  
+% 'and'[ <primPolicy$_{1}$>, ..., 
+%                 <primPolicy$_{m}$> ]	&\Comment{; conjunction }&
+%\end{lstlisting}
+%\end{minipage}
+%
+%Similar to assets and subjects, actions are application specific and we use specific ones taken from~\cite{pucella2006} such as \syn{Display} and \syn{Print} (see listing~\ref{lst:actast}).
+%
+%% act
+%\lstset{mathescape, language=AST}  
+%\begin{lstlisting}[frame=single, caption={act},label={lst:actast}]
+%<act> ::= Play | Print | Display | ...
+%\end{lstlisting}
+%
+%A policy identifier (\syn{<policyId>}) is a unique identifier specified as (increasing) positive integers (see listing~\ref{lst:policyIdast}).
+%
+%% id
+%\lstset{mathescape, language=AST}  
+%\begin{lstlisting}[frame=single, caption={policyId},label={lst:policyIdast}]
+%<policyId> ::= N
+%\end{lstlisting}
+%
+%In \ac{ACCPL} a \syn{<primPrerequisite>} is either True or it is a \syn{<constraint>}. The True prerequisite always holds. A constraint is an intrinsic part of a policy and cannot be influenced by agreement's users. Minimum height requirements for popular attractions and rides are examples of what we would consider a constraint (although not supported in \ac{ACCPL}). A constraint can also be negative, specified by the keyword `not' in front of \syn{<constraint>}. A \syn{<prerequisite>} is a set of primitive prerequisites which are closed under conjunction operator specified by the keyword `and' in front of the list of the primitive prerequisites separated by commas (see listing~\ref{lst:preRequisiteast}).
+%
+%% prq
+%
+%\lstset{mathescape, language=AST, escapechar=\&}  
+%\begin{lstlisting}[frame=single, caption={prerequisite},label={lst:preRequisiteast}]
+%<primPrerequisite> ::=  
+%       'True' &\Comment{; always true}&
+%    |  <constraint>	 &\Comment{; constraint}&
+%    |  'not' [ <constraint> ] &\Comment{; suspending constraint}&
+%    
+%<prerequisite> ::=    
+%    |  'and'[ <primPrerequisite$_{1}$>, ..., <primPrerequisite$_{m}$> ] &\Comment{; conjunction }&
+%\end{lstlisting}
+%
+%Constraints are either of the principal kind, the count kind, or the count by principle kind. Principal constraints require matching to the users listed following the keyword \syn{<prin>}. For example, the constraint of ``the user being Alice'' is a constraint of type principal. A count constraint refers to the number of times the user of an agreement has invoked policies to justify her actions. If the count constraint is part of a policy then the count refers to that single policy. In the case that the count constraint is part of a policy set or if the policy is a conjunction, then the count refers to the set of policies specified in the policy set or in the policy conjunction as the case may be (see listing~\ref{lst:constraintast}).
+%
+%% constraint
+%\lstset{mathescape, language=AST, escapechar=\&}  
+%\begin{minipage}[c]{0.95\textwidth}
+%\begin{lstlisting}[frame=single, caption={constraint},label={lst:constraintast}]
+%<constraint> ::=  
+%       <prin> &\Comment{; principal}&
+%    |  'Count' [N] &\Comment{; number of executions}&
+%    |  <prin> ('Count' [N]) &\Comment{; number of executions by prin}&
+%\end{lstlisting}
+%\end{minipage}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%\blindtext\todo{Refine me}
+
+
+%\begin{figure}
+%Simple Figure
+%\caption{Simple Figure}
+%\label{fig:simple}
+%\end{figure}
+%
+%\begin{table}
+%\caption{Simple Table}
+%
+%\label{tab:simple}
+%Simple Table
+%\end{table}
+
+%cref Demonstration: Cref at beginning of sentence, cref in all other cases.
+%
+%\Cref{fig:simple} shows a simple fact, although \cref{fig:simple} could also show something else.
+%
+%\Cref{tab:simple} shows a simple fact, although \cref{tab:simple} could also show something else.
+%
+%\Cref{sec:intro} shows a simple fact, although \cref{sec:intro} could also show something else.
+%
+%Brackets work as designed:
+%<test>
+%
+%The symbol for powerset is now correct: $\powerset$ and not a Weierstrass p ($\wp$).
+%
+%\begin{inparaenum}
+%\item All these items...
+%\item ...appear in one line
+%\item This is enabled by the paralist package.
+%\end{inparaenum}
+%
+%``something in quotes'' using plain tex or use \enquote{the enquote command}.
+
+\section{Conclusion and Outlook}
+
+\subsubsection*{Acknowledgments}
+...
+
+In the bibliography, use \texttt{\textbackslash textsuperscript} for ``st'', ``nd'', ...:
+E.g., \enquote{The 2\textsuperscript{nd} conference on examples}.
+When you use \href{http://www.jabref.org}{JabRef}, you can use the clean up command to achieve that.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\bibliographystyle{splncs03}
+\bibliography{paper}
+
+All links were last followed on October 5, 2014.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\end{document}
