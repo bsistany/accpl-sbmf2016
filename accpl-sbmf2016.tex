@@ -488,6 +488,32 @@ Constraints are either of the principal kind, the count kind, or the count by pr
 \end{lstlisting}
 %\end{minipage}
 
+
+%%%%%% parts/115-odrl0-syntax-coq %%%%%%%
+
+\section{Introduction to Coq}
+
+Coq is known first and foremost as a proof-assistant. The underlying formal language that Coq uses is a much more expressive version of typed lambda calculus called \ac{cic} where proofs and programs can both be represented. For example, \ac{cic} adds polymorphism (terms depending on types), type operators (types depending on types) and dependent types (types depending on terms).
+
+Specifications of programs in Coq may be expressed using the specification language \emph{Gallina}~\cite{gallinaref}. Coq is then used to develop proofs to show that a program's run-time behaviour satisfies its specification. Such programs are called \emph{certified} because they are formally verified and confirmed to conform to their specifications~\cite{BC04}.
+
+Assertions or propositions are statements about values in Coq such as \syn{3<8} or \syn{8<3} that may be true, false or even be only conjectures. To verify that a proposition is true a proof needs to constructed. While paper-proofs use a combination of mathematics and natural language to describe their proofs, Coq provides a formal (and therefore unambiguous) language that is based on proof-theory to develop proofs in. Verification of complex proofs is possible because one can verify the intermediate proofs or sub-goals in steps, each step being derived from the previous by following precise derivation rules. The Coq proof engine solves successive goals by using predefined \emph{tactics}. Coq tactics are commands to manipulate the local context and to decompose a goal into simpler goals or sub-goals~\cite{BC04}.
+
+\section{ACCPL Syntax}\label{sec:agreementConstructor}
+
+\ac{ACCPL} productions were presented as high level abstract syntax in Section~\ref{sec:productionast}. Below we present the corresponding encodings in Coq. 
+
+An \syn{agreement} is a new inductive type in Coq by the same name. The constructor \syn{Agreement} takes a \syn{prin}, an \syn{asset} and a \syn{policySet}. \syn{prin} is defined to be a nonempty list of \syn{subject}s (see listing~\ref{lst:agreementcoq}). 
+
+\ac{ACCPL} types \syn{asset}, \syn{subject}, \syn{act} and \syn{policyId} are base types and are simply defined as \syn{nat} which is the datatype of natural numbers defined in coq's library module \syn{Coq.Init.Datatypes} (\syn{nat} is itself an inductive datatype). We use Coq constants to refer to specific objects of each type. For example, the subject `Alice' is defined as \begin{verbatim}Definition Alice:subject := 101.\end{verbatim} and the act `Play' as \begin{verbatim}Definition Play : act := 301.\end{verbatim} Note that whereas in the implementation of \syn{asset}, \syn{subject} and \syn{act} in this chapter we used \syn{nat}s, in the abstract syntax chapter (chapter~\ref{chap:odrl0syntax}) in the corresponding listings~\ref{lst:assetast},~\ref{lst:subjectast} and~\ref{lst:actast} we used syntactic tokens like 'Alice' and 'ebook' directly. 
+
+Next we define the \syn{policySet} datatype which is the direct implementation of the abstract syntax presented in listing~\ref{lst:policySetast}. A \syn{policySet} is constructed only one way: by calling the \syn{PPS} constructor which takes a \syn{primPolicySet} as input. There are two ways a \syn{primPolicySet} can be constructed (see listing~\ref{lst:policySetast} for the abstract syntax version) corresponding to two constructors: \syn{PIPS} and \syn{PEPS}. 
+
+Both \syn{primInclusivePolicySet} and \syn{primExclusivePolicySet} types are constructed by taking a \syn{preRequisite} and a \syn{policy} as parameters (see listing~\ref{lst:primInclusivePolicySetast} and ~\ref{lst:primExclusivePolicySetast} for the abstract syntax versions). While \syn{PIPS} takes a \syn{primInclusivePolicySet} as input, \syn{PEPS} takes a \syn{primExclusivePolicySet}. 
+
+A \syn{policy} is defined as a datatype with the constructor \syn{Policy} which takes a nonempty list of primitive policies, or \syn{primPolicy}s. A \syn{primPolicy} is constructed by calling \syn{PrimitivePolicy} which takes a prerequisite, \syn{preRequisite}, a policy identifier, \syn{policyId}, and an action, \syn{act} (see listing~\ref{lst:primPolicyast} for the abstract syntax version). Ignoring the \syn{policyId} for a moment, a primitive policy consists of a prerequisite and an action. Intuitively if the prerequisite holds, the action is allowed to be performed on the asset. 
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%\blindtext\todo{Refine me}
 
@@ -537,7 +563,7 @@ When you use \href{http://www.jabref.org}{JabRef}, you can use the clean up comm
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \bibliographystyle{splncs03}
-\bibliography{paper}
+\bibliography{accpl-sbmf2016}
 
 All links were last followed on October 5, 2014.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
