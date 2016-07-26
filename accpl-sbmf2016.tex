@@ -322,16 +322,15 @@ To determine the outcome of policies, specified conditions in those policies are
 
 In \ac{ACCPL}, agreements and facts (i.e. environments) will refer to a count of how many times each policy should be used and has been used respectively, to justify an action. 
 
-\subsection{Productions} \label{sec:productionast}
+\subsection{Abstract Syntax for ACCPL} \label{sec:productionast}
 
-The top level \ac{ACCPL} production is the \syn{<agreement>}. An agreement expresses what actions a set of subjects may perform on an object and under what conditions. Syntactically an agreement is composed of a set of subjects called a principal or \syn{<prin>}, an \syn{<asset>} and a \syn{<policySet>} (see listing~\ref{lst:agreementast}).
 
 \newcommand*{\Comment}[1]{\hfill\makebox[5.0cm][l]{#1}}%
 \newcommand*{\CommentPP}[1]{\hfill\makebox[3.0cm][l]{#1}}%
 % agreement
 \lstset{mathescape, language=AST, escapechar=\&} 
-%\begin{minipage}[c]{0.95\textwidth}
-\begin{lstlisting}[frame=single, caption={agreement},label={lst:agreementast}]
+\begin{minipage}[c]{0.95\textwidth}
+\begin{lstlisting}[frame=single, caption={Abstract Syntax for ACCPL},label={lst:agreementast}]
 <agreement> ::= 
      'agreement' 'for' <prin> 'about' <asset> 'with' <policySet> 
 <prin> ::=  { <subject$_{1}$>, ..., <subject$_{m}$> }
@@ -365,140 +364,18 @@ The top level \ac{ACCPL} production is the \syn{<agreement>}. An agreement expre
   |  'Count' [N] &\Comment{; number of executions}&
   |  <prin> ('Count' [N]) &\Comment{; number of executions by prin}&     
 \end{lstlisting}
-%\end{minipage} 
+\end{minipage} 
 
-Principals (\syn{<prin>}) are composed of \syn{<subject>}s which are specified based on the application e.g. \syn{Alice}, \syn{Bob}, etc (see listing~\ref{lst:prinast}).
+The abstract syntax for \ac{ACCPL} is given in Listing~\ref{lst:agreementast}. The top level production is the \syn{<agreement>}. An agreement expresses what actions a set of subjects may perform on an object and under what conditions. Syntactically an agreement is composed of a set of subjects called a principal or \syn{<prin>}, an \syn{<asset>} and a \syn{<policySet>}. Principals (\syn{<prin>}) are composed of \syn{<subject>}s which are specified based on the application e.g. \syn{Alice}, \syn{Bob}, etc. Assets and actions are also application specific such as \syn{TheReport} and \syn{ebook} for assets and \syn{Display} and \syn{Print} for actions. 
 
+A policy set is a primitive policy set implying non-nested policy sets. Each primitive policy set specifies a \syn{<prerequisite>} and a \syn{<policy>}. Intuitively if the prerequisite ``holds'' the policy is taken into consideration. Otherwise the policy will not be looked at. Some primitive policy sets are specified as inclusive as opposed to others that are explicitly specified as exclusive. Primitive exclusive policy sets are exclusive to an agreement's users in that only those users may perform the actions specified in the policy set. The implication is that all other users who are not specified in the agreement's principal are forbidden from performing the specified actions, no matter whether the prerequisite holds or not. Not surprisingly we also define primitive inclusive policy sets that don't enforce any exclusivity to the agreement's users.
 
-%% prin
-\lstset{mathescape, language=AST}  
-\begin{lstlisting}[frame=single, caption={prin},label={lst:prinast}]
-<prin> ::=  { <subject$_{1}$>, ..., <subject$_{m}$> }
-\end{lstlisting}
+A primitive policy specifies an action to be performed on an asset, depending on whether the policy's prerequisite holds or not. If the prerequisite holds the agreement's user is permitted to perform the action on the agreement's asset; otherwise permission is denied. A unique identifier for each policy to help the translation (from agreements to formulas), called the policy identifier (\syn{<policyId>}) is included in our definition of the policy construct, however, as far as the proofs are concerned the policy identifier could be removed without a loss to the obtained results. A policy is made up of primitive policies. Primitive policies are grouped together using the conjunction combining operator.
 
-Assets are also application specific and we will continue using specific ones for the \ac{drm} application (taken from~\cite{pucella2006}). \syn{TheReport}, \syn{ebook}, and \syn{latestJingle} are examples of specific assets we will be using throughout (see listing~\ref{lst:assetast}). 
+In \ac{ACCPL} a \syn{<primPrerequisite>} is either True or it is a \syn{<constraint>}. The True prerequisite always holds. A constraint is an intrinsic part of a policy and cannot be influenced by agreement's users. A constraint can also be negative, specified by the keyword `not' in front of \syn{<constraint>}. A \syn{<prerequisite>} is a set of primitive prerequisites which are closed under conjunction operator specified by the keyword `and' in front of the list of the primitive prerequisites separated by commas.
 
-% asset
-\lstset{mathescape, language=AST}  
-\begin{lstlisting}[frame=single, caption={asset},label={lst:assetast}]
-<asset> ::= TheReport | ebook | latestJingle | ...
-\end{lstlisting}
+Constraints are either of the principal kind, the count kind, or the count by principle kind. Principal constraints require matching to the users listed following the keyword \syn{<prin>}. For example, the constraint of ``the user being Alice'' is a constraint of type principal. A count constraint refers to the number of times the user of an agreement has invoked policies to justify her actions. If the count constraint is part of a policy then the count refers to that single policy. In the case that the count constraint is part of a policy set or if the policy is a conjunction, then the count refers to the set of policies specified in the policy set or in the policy conjunction as the case may be.
 
-Subjects are treated similarly to assets. We will use specific subjects like \syn{Alice} and \syn{Bob} (see listing~\ref{lst:subjectast}).
-
-% subject
-\lstset{mathescape, language=AST}  
-\begin{lstlisting}[frame=single, caption={subject},label={lst:subjectast}]
-<subject> ::= Alice | Bob | ...
-\end{lstlisting}
-
-Agreements express who may perform an action on an asset. They include a set of subjects (in the form of a principal), an asset and a policy set. A policy set is a primitive policy set implying non-nested policy sets. Note that we could define various combining operators for policy sets such as conjunctions and disjunctions but we keep \ac{ACCPL}'s policy sets limited to the primitive kind and their conjunctions. We do however, use a combining operator when it comes to dealing with policies later on. Each primitive policy set specifies a \syn{<prerequisite>} and a \syn{<policy>}. Intuitively if the prerequisite ``holds'' the policy is taken into consideration. Otherwise the policy will not be looked at (see listing~\ref{lst:policySetast}).
-
-
-% policySet
-
-\lstset{mathescape, language=AST, escapechar=\&}  
-\begin{minipage}[c]{0.95\textwidth}
-\begin{lstlisting}[frame=single, caption={policySet and primPolicySet},label={lst:policySetast}]
-<policySet> ::=  
-  <primPolicySet> &\Comment{; primitive policy set}&
-<primPolicySet> ::=  
-   <primInclusivePolicySet> &\Comment{; primitive inclusive policy set}&
-  |<primExclusivePolicySet> &\Comment{; primitive exclusive policy set}&
-\end{lstlisting}
-\end{minipage}
-
-Some primitive policy sets are specified as inclusive as opposed to others that are explicitly specified as exclusive. Primitive exclusive policy sets are exclusive to an agreement's users in that only those users may perform the actions specified in the policy set. The implication is that all other users who are not specified in the agreement's principal are forbidden from performing the specified actions, no matter whether the prerequisite holds or not (see listing~\ref{lst:primExclusivePolicySetast}).
-
-% primExclusivePolicySet
-\lstset{mathescape, language=AST, escapechar=\&}  
-\begin{lstlisting}[frame=single, caption={primExclusivePolicySet},label={lst:primExclusivePolicySetast}]
-<primExclusivePolicySet> ::=  
-  <prerequisite> $\mapsto$ <policy> &\Comment{; primitive exclusive policy set}&
-\end{lstlisting}
-
-Not surprisingly we also define primitive inclusive policy sets that don't enforce any exclusivity to the agreement's users (see listing~\ref{lst:primInclusivePolicySetast}).
-
-% primInclusivePolicySet
-\lstset{mathescape, language=AST, escapechar=\&}  
-\begin{lstlisting}[frame=single, caption={primInclusivePolicySet},label={lst:primInclusivePolicySetast}]
-<primInclusivePolicySet> ::=  
-  <prerequisite> $\rightarrow$ <policy> &\Comment{; primitive inclusive policy set}&
-\end{lstlisting}
-
-
-A primitive policy specifies an action to be performed on an asset, depending on whether the policy's prerequisite holds or not. If the prerequisite holds the agreement's user is permitted to perform the action on the agreement's asset; otherwise permission is denied. Pucella and Weissman's subset of \ac{odrl}~\cite{pucella2006} specifies a unique identifier for each policy to help the translation (from agreements to formulas). \ac{ACCPL} has maintained the policy identifier and we include it here in our definition of the policy construct, however, as far as the proofs are concerned the policy identifier could be removed without a loss to the obtained results (see listing~\ref{lst:primPolicyast}).
-
-% primitive policy
-
-
-\lstset{mathescape, language=AST, escapechar=\&}  
-\begin{minipage}[c]{0.95\textwidth}
-\begin{lstlisting}[frame=single, caption={primPolicy},label={lst:primPolicyast}]
-<primPolicy> ::=  
-  <prerequisite> $\Rightarrow_{<policyId>}$ <act> &\CommentPP{; primitive policy}&
-\end{lstlisting}
-\end{minipage}
-
-A policy is made up of primitive policies. Primitive policies are grouped together using the conjunction combining operator (see listing~\ref{lst:policyast}).
-
-% policy
-\lstset{mathescape, language=AST, escapechar=\&}  
-%\begin{minipage}[c]{0.95\textwidth}
-\begin{lstlisting}[frame=single, caption={policy},label={lst:policyast}]
-<policy> ::=  
-  'and'[ <primPolicy$_{1}$>, ..., 
-      <primPolicy$_{m}$> ] &\CommentPP{; conjunction}&
-\end{lstlisting}
-%\end{minipage}
-
-Similar to assets and subjects, actions are application specific and we use specific ones taken from~\cite{pucella2006} such as \syn{Display} and \syn{Print} (see listing~\ref{lst:actast}).
-
-% act
-\lstset{mathescape, language=AST}  
-\begin{lstlisting}[frame=single, caption={act},label={lst:actast}]
-<act> ::= Play | Print | Display | ...
-\end{lstlisting}
-
-A policy identifier (\syn{<policyId>}) is a unique identifier specified as (increasing) positive integers (see listing~\ref{lst:policyIdast}).
-
-% id
-\lstset{mathescape, language=AST}  
-\begin{lstlisting}[frame=single, caption={policyId},label={lst:policyIdast}]
-<policyId> ::= N
-\end{lstlisting}
-
-In \ac{ACCPL} a \syn{<primPrerequisite>} is either True or it is a \syn{<constraint>}. The True prerequisite always holds. A constraint is an intrinsic part of a policy and cannot be influenced by agreement's users. Minimum height requirements for popular attractions and rides are examples of what we would consider a constraint (although not supported in \ac{ACCPL}). A constraint can also be negative, specified by the keyword `not' in front of \syn{<constraint>}. A \syn{<prerequisite>} is a set of primitive prerequisites which are closed under conjunction operator specified by the keyword `and' in front of the list of the primitive prerequisites separated by commas (see listing~\ref{lst:preRequisiteast}).
-
-% prq
-
-\lstset{mathescape, language=AST, escapechar=\&}  
-\begin{lstlisting}[frame=single, caption={prerequisite},label={lst:preRequisiteast}]
-<primPrerequisite> ::=  
-    'True' &\Comment{; always true}&
-  |  <constraint>	 &\Comment{; constraint}&
-  |  'not' [ <constraint> ] &\Comment{; suspending constraint}&
-    
-<prerequisite> ::=    
-  |  'and'[ <primPrerequisite$_{1}$>, ..., 
-    <primPrerequisite$_{m}$> ] &\Comment{; conjunction }&
-\end{lstlisting}
-
-Constraints are either of the principal kind, the count kind, or the count by principle kind. Principal constraints require matching to the users listed following the keyword \syn{<prin>}. For example, the constraint of ``the user being Alice'' is a constraint of type principal. A count constraint refers to the number of times the user of an agreement has invoked policies to justify her actions. If the count constraint is part of a policy then the count refers to that single policy. In the case that the count constraint is part of a policy set or if the policy is a conjunction, then the count refers to the set of policies specified in the policy set or in the policy conjunction as the case may be (see listing~\ref{lst:constraintast}).
-
-% constraint
-\lstset{mathescape, language=AST, escapechar=\&}  
-%\begin{minipage}[c]{0.95\textwidth}
-\begin{lstlisting}[frame=single, caption={constraint},label={lst:constraintast}]
-<constraint> ::=  
-    <prin> &\Comment{; principal}&
-  |  'Count' [N] &\Comment{; number of executions}&
-  |  <prin> ('Count' [N]) &\Comment{; number of executions by prin}&
-\end{lstlisting}
-%\end{minipage}
-
-
-%%%%%% parts/115-odrl0-syntax-coq %%%%%%%
 
 \section{Introduction to Coq}
 
@@ -506,149 +383,73 @@ Coq is known first and foremost as a proof-assistant. The underlying formal lang
 
 Specifications of programs in Coq may be expressed using the specification language \emph{Gallina}~\cite{gallinaref}. Coq is then used to develop proofs to show that a program's run-time behaviour satisfies its specification. Such programs are called \emph{certified} because they are formally verified and confirmed to conform to their specifications~\cite{BC04}.
 
-Assertions or propositions are statements about values in Coq such as \syn{3<8} or \syn{8<3} that may be true, false or even be only conjectures. To verify that a proposition is true a proof needs to constructed. While paper-proofs use a combination of mathematics and natural language to describe their proofs, Coq provides a formal (and therefore unambiguous) language that is based on proof-theory to develop proofs in. Verification of complex proofs is possible because one can verify the intermediate proofs or sub-goals in steps, each step being derived from the previous by following precise derivation rules. The Coq proof engine solves successive goals by using predefined \emph{tactics}. Coq tactics are commands to manipulate the local context and to decompose a goal into simpler goals or sub-goals~\cite{BC04}.
+\section{ACCPL Syntax in Coq}\label{sec:agreementConstructor}
 
-\section{ACCPL Syntax}\label{sec:agreementConstructor}
-
-\ac{ACCPL} productions were presented as high level abstract syntax in Section~\ref{sec:productionast}. Below we present the corresponding encodings in Coq. 
-
-An \syn{agreement} is a new inductive type in Coq by the same name. The constructor \syn{Agreement} takes a \syn{prin}, an \syn{asset} and a \syn{policySet}. \syn{prin} is defined to be a nonempty list of \syn{subject}s (see listing~\ref{lst:agreementcoq}). 
-
-\ac{ACCPL} types \syn{asset}, \syn{subject}, \syn{act} and \syn{policyId} are base types and are simply defined as \syn{nat} which is the datatype of natural numbers defined in coq's library module \syn{Coq.Init.Datatypes} (\syn{nat} is itself an inductive datatype). We use Coq constants to refer to specific objects of each type. For example, the subject `Alice' is defined as \begin{verbatim}Definition Alice:subject := 101.\end{verbatim} and the act `Play' as \begin{verbatim}Definition Play : act := 301.\end{verbatim} Note that whereas in the implementation of \syn{asset}, \syn{subject} and \syn{act} in this chapter we used \syn{nat}s, in the abstract syntax chapter (chapter~\ref{chap:odrl0syntax}) in the corresponding listings~\ref{lst:assetast},~\ref{lst:subjectast} and~\ref{lst:actast} we used syntactic tokens like 'Alice' and 'ebook' directly. 
-
-Next we define the \syn{policySet} datatype which is the direct implementation of the abstract syntax presented in listing~\ref{lst:policySetast}. A \syn{policySet} is constructed only one way: by calling the \syn{PPS} constructor which takes a \syn{primPolicySet} as input. There are two ways a \syn{primPolicySet} can be constructed (see listing~\ref{lst:policySetast} for the abstract syntax version) corresponding to two constructors: \syn{PIPS} and \syn{PEPS}. 
-
-Both \syn{primInclusivePolicySet} and \syn{primExclusivePolicySet} types are constructed by taking a \syn{preRequisite} and a \syn{policy} as parameters (see listing~\ref{lst:primInclusivePolicySetast} and ~\ref{lst:primExclusivePolicySetast} for the abstract syntax versions). While \syn{PIPS} takes a \syn{primInclusivePolicySet} as input, \syn{PEPS} takes a \syn{primExclusivePolicySet}. 
-
-A \syn{policy} is defined as a datatype with the constructor \syn{Policy} which takes a nonempty list of primitive policies, or \syn{primPolicy}s. A \syn{primPolicy} is constructed by calling \syn{PrimitivePolicy} which takes a prerequisite, \syn{preRequisite}, a policy identifier, \syn{policyId}, and an action, \syn{act} (see listing~\ref{lst:primPolicyast} for the abstract syntax version). Ignoring the \syn{policyId} for a moment, a primitive policy consists of a prerequisite and an action. Intuitively if the prerequisite holds, the action is allowed to be performed on the asset. 
-
+\ac{ACCPL} productions were presented as high level abstract syntax in Section~\ref{sec:productionast}. We present the corresponding encodings in Coq in Listing~\ref{lst:agreementcoq}. Note that the data type \syn{nonemptylist} represents a list data structure that has at least one element and data types \syn{asset}, \syn{subject}, \syn{act} and \syn{policyId} are simply defined as Coq's \syn{nat}.
 
 \lstset{language=Coq}
 \begin{minipage}[c]{0.95\textwidth}
 \begin{lstlisting}[frame=single, caption={ACCPL: Coq Version of Agreement},label={lst:agreementcoq}]
 Inductive agreement : Set :=
   | Agreement : prin -> asset -> policySet -> agreement.
-
 Definition prin := nonemptylist subject.
-
-Definition asset := nat.
-
-Definition subject := nat.
-
-Definition act := nat.
-
-Definition policyId := nat.
-
 Inductive policySet : Set :=
   | PPS : primPolicySet -> policySet.
-  
 Inductive primPolicySet : Set :=
   | PIPS : primInclusivePolicySet -> primPolicySet
   | PEPS : primExclusivePolicySet -> primPolicySet.
-
 Inductive primInclusivePolicySet : Set :=
   | PrimitiveInclusivePolicySet : preRequisite -> policy -> primInclusivePolicySet.
-
 Inductive primExclusivePolicySet : Set :=
   | PrimitiveExclusivePolicySet : preRequisite -> policy  -> primExclusivePolicySet.
-
 Inductive policy : Set :=
   | Policy : nonemptylist primPolicy -> policy.
-
 Inductive primPolicy : Set :=
-  | PrimitivePolicy : preRequisite -> policyId -> act -> primPolicy.
-
-\end{lstlisting}
-\end{minipage}
-
-The data type \syn{nonemptylist} reflects the definition of ``policy conjunction'' (see the definition of \syn{nonemptylist} in listing~\ref{lst:nonemptylistcoq}). Essentially \syn{nonemptylist} represents a list data structure that has at least one element and it is defined as a new \emph{polymorphic} inductive type in its own Coq section. See the abstract syntax version for ``policy conjunction'' in listing~\ref{lst:policyast}. 
-
-
-\lstset{language=Coq, frame=single, caption={nonemptylist},label={lst:nonemptylistcoq}}
-\begin{minipage}[c]{0.95\textwidth}
-\begin{lstlisting}
-Section nonemptylist.
-
-Variable X : Set.
-
-Inductive nonemptylist : Set :=
-  | Single : X -> nonemptylist 
-  | NewList : X -> nonemptylist -> nonemptylist.
-
-End nonemptylist.
-\end{lstlisting}
-\end{minipage}
-
-
-In listing~\ref{lst:preRequisitecoq} a \syn{preRequisite} is defined as a datatype with the constructor \syn{PreRequisite} which takes a nonempty list of primitive prerequisites, or \syn{primPreRequisite}s. A \\ \syn{primPreRequisite} is defined as a new datatype with constructors \syn{TruePrq}, \syn{Constraint} and \syn{NotCons} (see listing~\ref{lst:preRequisiteast} for the abstract syntax equivalent). \syn{TruePrq} represents the always true prerequisite. The \syn{Constraint} constructor takes a value of type \syn{constraint} which we will describe below. Intuitively a constraint is a prerequisite to be satisfied that is outside the control of the user(s). For example, the constraint of being `Alice'. The constructor \syn{NotCons} is defined the same way the \syn{Constraint} constructor is. This constructor is defined as the type \syn{constraint} and it is meant to represent the negation of a \syn{constraint} as we shall see in the translation (see listing~\ref{lst:transnotConsCoq}). In listing~\ref{lst:preRequisitecoq} we also show \syn{makePreRequisite} which is a convenience function that given a \syn{primPreRequisite}, builds a value of type \syn{preRequisite}.
-
-
-% prq
-\lstset{language=Coq}
-%\begin{minipage}[c]{0.95\textwidth}
-\begin{lstlisting}[frame=single, caption={preRequisite},label={lst:preRequisitecoq}]
+  | PrimitivePolicy : preRequisite -> policyId -> act -> primPolicy.  
 Inductive primPreRequisite : Set :=
   | TruePrq : primPreRequisite
   | Constraint : constraint -> primPreRequisite
   | NotCons : constraint -> primPreRequisite.
- 
 Inductive preRequisite : Set :=
   | PreRequisite : nonemptylist primPreRequisite -> preRequisite.
-
-Definition makePreRequisite (prq:primPreRequisite) : preRequisite :=
- (PreRequisite (Single prq)).
-\end{lstlisting}
-%\end{minipage}
-
-Finally a \syn{constraint} (see  listing~\ref{lst:constraintast} for the abstract syntax equivalent) is defined as a new datatype with constructors \syn{Principal}, \syn{Count} and \syn{CountByPrin}. See listing~\ref{lst:exampleconst} for the definition of \syn{constraint} and examples of how the three different kinds of constraints are constructed.
-
-\lstset{language=Coq}
-\begin{minipage}[c]{0.95\textwidth}
-\begin{lstlisting}[frame=single, caption={Constraint Definition and the Three Kinds of Constraints},label={lst:exampleconst}]
 Inductive constraint : Set :=
   | Principal : prin  -> constraint 
   | Count : nat -> constraint 
-  | CountByPrin : prin -> nat -> constraint.
-
-(Constraint (Principal (Single Alice))).
-
-(Constraint (Count 10)).
-
-(Constraint (CountByPrin (Single Alice) 10)).
+  | CountByPrin : prin -> nat -> constraint.  
 \end{lstlisting}
 \end{minipage}
 
-We started with the encoding of the policy statement for ``First Agreement for Alice and Bob'' earlier but we deferred the definition of the Coq constructs used to encode that agreement. All the definitions needed to encode the agreement for Alice and Bob have now been defined so we now show how that agreement looks like as encodings of \ac{ACCPL} constructs in Coq in the listing~\ref{lst:agreementincoq}. Recall the listing~\ref{lst:agreementast} for the abstract syntax form of the statement.
+We now show the statement expressing ``the assetTheReport may be printed a total of 5 times by either Alice or Bob and twice more byAlice only'' in the abstract syntax notation in~\ref{lst:agreementinAST}, as encodings of \ac{ACCPL} constructs in Coq in~\ref{lst:agreementincoq} and finally as an \ac{ACCPL} construct in~\ref{lst:agreementincoq2}.
 
-We show how the ``First Agreement for Alice and Bob'' statement would be expressed in \ac{ACCPL} using Coq constructs, in listing~\ref{lst:agreementincoq}.
+\lstset{language=Pucella2006}
+%\begin{minipage}[c]{0.95\textwidth}
+\begin{lstlisting}[frame=single, caption={First Agreement for Alice and Bob}, label={lst:agreementinAST}, mathescape]
+agreement
+ for Alice and Bob
+ about The Report
+ with True -> and[Alice, count[2]] =>$_{id1}$ print.
+\end{lstlisting}
+%\end{minipage}
 
 \lstset{language=Coq, frame=single, caption={Expressing First Agreement for Alice and Bob in ACCPL}, label={lst:agreementincoq}}
 \begin{minipage}[c]{0.95\textwidth}
 \begin{lstlisting}
 Definition ps_xml_p1prq1:primPreRequisite := 
   (Constraint (Principal (Single Alice))).
-
 Definition ps_xml_p1prq2:primPreRequisite := 
   (Constraint (Count 2)).
-
 Definition ps_xml_prq:preRequisite := 
   (PreRequisite (NewList ps_xml_p1prq1 (Single ps_xml_p1prq2))).
-
 Definition ps_xml_p1:primPolicy := 
   (PrimitivePolicy ps_xml_prq id1 Print).
-
 Definition ps_xml_p:policy := 
   (Policy (Single ps_xml_p1)).
-
 Definition ps_xml:primPolicySet :=
   PIPS (PrimitiveInclusivePolicySet
     (makePreRequisite TruePrq) ps_xml_p).
-
 Definition Axml := Agreement (NewList Alice (Single Bob)) TheReport (PPS ps_xml).
 \end{lstlisting}
 \end{minipage} 
-
-We show how the ``First Agreement for Alice and Bob'' policy statement looks like as an \ac{ACCPL} construct, in listing~\ref{lst:agreementincoq2}.
 
 \lstset{language=Coq, frame=single, caption={Fully Built First Agreement for Alice and Bob in ACCPL}, label={lst:agreementincoq2}}
 \begin{minipage}[c]{0.95\textwidth}
