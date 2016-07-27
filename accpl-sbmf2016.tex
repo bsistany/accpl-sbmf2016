@@ -50,6 +50,11 @@ qt=false%
 
 %tweak \url{...}
 \usepackage{url}
+\usepackage[section]{algorithm}
+\usepackage{algorithmic}
+\usepackage{fancybox}
+%\usepackage[]{algorithm2e}
+%\usepackage{algpseudocode}
 %nicer // - solution by http://tex.stackexchange.com/a/98470/9075
 \makeatletter
 \def\Url@twoslashes{\mathchar`\/\@ifnextchar/{\kern-.2em}{}}
@@ -118,8 +123,19 @@ pdfstartview=Fit
 %\usepackage{lstcoq}
 \usepackage{url}
 
-\usepackage{algorithm}
-\usepackage{algorithmic}
+
+
+
+\newcommand{\notimplies}{%
+  \mathrel{{\ooalign{\hidewidth$\not\phantom{=}$\hidewidth\cr$\implies$}}}}
+
+\newcommand{\algCaption}[1]{
+    \caption{#1}
+    \addcontentsline{lol}{lstlisting}{\protect\numberline{\thealgorithm}#1}
+    \addtocounter{lstlisting}{1}}
+\AtBeginEnvironment{lstlisting}{\addtocounter{algorithm}{1}}
+
+
 
 \lstdefinelanguage{XML}
 {
@@ -422,14 +438,14 @@ Inductive constraint : Set :=
 We now show the statement expressing ``the asset TheReport may be printed a total of 2 times by Alice only'' in the abstract syntax notation in~\ref{lst:agreementinAST}, as encodings of \ac{ACCPL} constructs in Coq in~\ref{lst:agreementincoq} and finally as an \ac{ACCPL} construct in~\ref{lst:agreementincoq2}.
 
 \lstset{language=Pucella2006}
-%\begin{minipage}[c]{0.95\textwidth}
+\begin{minipage}[c]{0.95\textwidth}
 \begin{lstlisting}[frame=single, caption={First Agreement for Alice and Bob}, label={lst:agreementinAST}, mathescape]
 agreement
  for Alice and Bob
  about The Report
  with True -> and[Alice, count[2]] =>$_{id1}$ print.
 \end{lstlisting}
-%\end{minipage}
+\end{minipage}
 
 \lstset{language=Coq, frame=single, caption={Expressing First Agreement for Alice and Bob in ACCPL}, label={lst:agreementincoq}}
 \begin{minipage}[c]{0.95\textwidth}
@@ -485,6 +501,73 @@ In \ac{ACCPL} we use a three-valued decision set: \syn{Permitted}, \syn{NotPermi
 
 Intuitively a query or request asks the following question given an agreement: ``May subject \syn{s} perform an action \syn{ac} to asset \syn{a}?''. We represent a query by its components, namely the subject, action and asset that form the query question: \syn{action_from_query}, \syn{subject_from_query} and \syn{asset_from_query}. While developing the proofs for the correctness of \ac{ACCPL} we realized we needed this query specific information deep in the translation functions to be able to render unambiguous decisions and ultimately make the proofs work. We therefore pass the query components to all the translation functions starting with the \syn{trans_agreement} function (see listing~\ref{lst:transagreement}). 
 
+In the following we present the high-level description of how the main algorithm (encoded in the translation functions) works in two separate listings based on whether the policy set in question is inclusive or exclusive. 
+
+The first listing (Algorithm~\ref{inclusivePS}) for inclusive policy sets, shows how a positive answer to a query in the form of a \syn{Permitted} decision is reached. All cases when a decision of \syn{Unregulated} is rendered are explicitly captured and shown. The second listing (Algorithm~\ref{exclusivePS}) for exclusive policy sets, shows how a negative answer to a query in the form of a \syn{NotPermitted} decision is reached. This listing also shows that a positive decision of \syn{Permitted} is reached in exactly the same way as the case for inclusive policy sets. All cases when a decision of \syn{Unregulated} is rendered are explicitly captured and shown.
+
+ 
+\begin{algorithm}[H]
+%\caption{Access Decision Pseudocode: Inclusive Policy Sets}  
+\algCaption{Access Decision Pseudocode: Inclusive Policy Sets}       
+\label{inclusivePS}   
+\begin{algorithmic}        
+    \IF{$asset\_from\_query = asset\_from\_agreement$}
+      \IF{$subject\_from\_query$ is in $prin\_u$}
+        \IF{The $preRequisite$ from the policy set holds}
+          \IF{The $preRequisite$ from the policy holds}
+            \IF{$action\_from\_query = action\_from\_agreement$}
+              \STATE $result$ = $subject\_from\_query$ is $Permitted$ to perform $action\_from\_query$ on $asset\_from\_query$
+            \ELSE
+              \STATE $result$ = $Unregulated$
+            \ENDIF            
+          \ELSE
+             \STATE $result$ = $Unregulated$
+          \ENDIF
+        \ELSE
+          \STATE $result$ = $Unregulated$
+        \ENDIF
+      \ELSE
+           \STATE $result$ = $Unregulated$
+      \ENDIF
+    \ELSE
+      \STATE $result$ = $Unregulated$
+    \ENDIF
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm} [H] 
+%\caption{Access Decision Pseudocode: Exclusive Policy Sets}
+\algCaption{Access Decision Pseudocode: Exclusive Policy Sets}            
+\label{exclusivePS}   
+\begin{algorithmic}        
+    \IF{$asset\_from\_query = asset\_from\_agreement$}
+      \IF{$subject\_from\_query$ is in $prin\_u$}
+        \IF{The $preRequisite$ from the policy set holds}
+          \IF{The $preRequisite$ from the policy holds}
+            \IF{$action\_from\_query = action\_from\_agreement$}
+              \STATE $result$ = $subject\_from\_query$ is $Permitted$ to perform $action\_from\_query$ on $asset\_from\_query$
+            \ELSE
+              \STATE $result$ = $Unregulated$
+            \ENDIF            
+          \ELSE
+             \STATE $result$ = $Unregulated$
+          \ENDIF
+        \ELSE
+          \STATE $result$ = $Unregulated$
+        \ENDIF
+      \ELSE
+            \IF{$action\_from\_query = action\_from\_agreement$}
+              \STATE $result$ = $subject\_from\_query$ is $NotPermitted$ to perform $action\_from\_query$ on $asset\_from\_query$
+            \ELSE
+              \STATE $result$ = $Unregulated$
+            \ENDIF
+      \ENDIF
+    \ELSE
+      \STATE $result$ = $Unregulated$
+    \ENDIF
+\end{algorithmic}
+\end{algorithm}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%\blindtext\todo{Refine me}
@@ -526,7 +609,6 @@ Intuitively a query or request asks the following question given an agreement: `
 
 \section{Conclusion and Outlook}
 
-\subsubsection*{Acknowledgments}
 ...
 
 In the bibliography, use \texttt{\textbackslash textsuperscript} for ``st'', ``nd'', ...:
