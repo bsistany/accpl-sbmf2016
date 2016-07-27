@@ -419,7 +419,7 @@ Inductive constraint : Set :=
 \end{lstlisting}
 \end{minipage}
 
-We now show the statement expressing ``the assetTheReport may be printed a total of 5 times by either Alice or Bob and twice more byAlice only'' in the abstract syntax notation in~\ref{lst:agreementinAST}, as encodings of \ac{ACCPL} constructs in Coq in~\ref{lst:agreementincoq} and finally as an \ac{ACCPL} construct in~\ref{lst:agreementincoq2}.
+We now show the statement expressing ``the asset TheReport may be printed a total of 2 times by Alice only'' in the abstract syntax notation in~\ref{lst:agreementinAST}, as encodings of \ac{ACCPL} constructs in Coq in~\ref{lst:agreementincoq} and finally as an \ac{ACCPL} construct in~\ref{lst:agreementincoq2}.
 
 \lstset{language=Pucella2006}
 %\begin{minipage}[c]{0.95\textwidth}
@@ -466,6 +466,24 @@ Agreement (Alice, [Bob]) TheReport
 
 \end{lstlisting}
 \end{minipage} 
+
+%%%% 125-semantics of ACCPL
+\section{Semantics}
+We specify the semantics of \ac{ACCPL} as a translation function from an agreement together with an access request and an environment containing all relevant facts, to decisions (more concretely to a set of \syn{result}s--see listing~\ref{lst:answercoq}). This is done based on whether there are proof terms for certain conditions and/or proof terms for the negation of those conditions. The translation functions plus the auxiliary types and infrastructure which implement the semantics for \ac{ACCPL} have been encoded in Coq.
+
+Whether an agreement and the accompanying access request or query is translated into a decision indicating a permission is granted or denied depends on the agreement in question and the specifics of the request, but also on the number of times a policy has been used to justify an action. We encode this information in Coq as an inductive type representing the environment. An \syn{environment} is a conjunction of equalities of the form \syn{count(subject, policyId) = n} which are called ``count equalities''.
+
+The \syn{sumbool} type is a boolean type defined in the Coq standard library; it captures the idea of program values that indicate which of two propositions is true~\cite{chlipalacpdt2011}. The \syn{sumbool} type is equipped with the justification of their value~\cite{Coq:manual} which help with proofs. Using a tactic like \syn{destruct}~\cite{Coq:manual} two subgoals are generated, one for each form of the \syn{sumbool} instance, however the justifications also show up as hypothesis helping with discharging of the subgoals. We have used the \syn{sumbool} type to declare and prove decision procedures that we have subsequently used in the translation functions implementing the semantics and also in the proofs.
+
+\subsection{Types of Decisions and their Implementation in Coq}\label{sec:answerandresulttypes}
+
+Policy based access-control languages typically use a two-valued decision set to indicate whether an access request is granted or denied. When a decision for a query is not granted, one design choice for a language is to return an explicit deny decision. However in this case deny stands for ``not permitted''. It is possible to have cases when the policy truly doesn't specify either a permit or a deny decision. In such cases arbitrarily returning the decision of deny makes it difficult to compose policies and in fact, an explicit decision of ``non applicable'' is warranted in such cases. Some languages may decide to only support permit decisions. In such languages lack of a permit decision for a query signifies a deny decision so deny decisions are not explicit. Although the policies of these languages may be more readable than those with more explicit decisions, they result in ambiguity on whether a deny decision was really intended or not. Finally some languages define an explicit decision of ``error'' for cases such as when both permit and deny decisions are reached for the same query. An explicit error decision is preferable to undefined behaviour because it can lead to improvements to policies and/or how the queries are built~\cite{Tschantz}. 
+
+In \ac{ACCPL} we use a three-valued decision set: \syn{Permitted}, \syn{NotPermitted} and \syn{Unregulated} (used as synonymous with ``non-applicable''). A \syn{Permitted} answer signifies that the access request has been granted. The \syn{NotPermitted} answer is for when the access request is denied. And finally the \syn{Unregulated} answer is for all the times when neither \syn{Permitted} or \syn{NotPermitted} answers are applicable.
+
+\subsection{Translations}\label{sec:translationfuncs}
+
+Intuitively a query or request asks the following question given an agreement: ``May subject \syn{s} perform an action \syn{ac} to asset \syn{a}?''. We represent a query by its components, namely the subject, action and asset that form the query question: \syn{action_from_query}, \syn{subject_from_query} and \syn{asset_from_query}. While developing the proofs for the correctness of \ac{ACCPL} we realized we needed this query specific information deep in the translation functions to be able to render unambiguous decisions and ultimately make the proofs work. We therefore pass the query components to all the translation functions starting with the \syn{trans_agreement} function (see listing~\ref{lst:transagreement}). 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
