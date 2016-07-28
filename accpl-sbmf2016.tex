@@ -152,6 +152,12 @@ pdfstartview=Fit
   identifierstyle=\color{black},
   autogobble=true
 }
+\lstdefinelanguage{pseudo}
+{
+  morekeywords={
+    IF, THEN, ELSE, END_IF, HOLDS, Permitted, NotPermitted, Unregulated, IN
+  }
+}
 \lstdefinelanguage{Pucella2006}
 {
   morekeywords={
@@ -503,70 +509,125 @@ Intuitively a query or request asks the following question given an agreement: `
 
 In the following we present the high-level description of how the main algorithm (encoded in the translation functions) works in two separate listings based on whether the policy set in question is inclusive or exclusive. 
 
-The first listing (Algorithm~\ref{inclusivePS}) for inclusive policy sets, shows how a positive answer to a query in the form of a \syn{Permitted} decision is reached. All cases when a decision of \syn{Unregulated} is rendered are explicitly captured and shown. The second listing (Algorithm~\ref{exclusivePS}) for exclusive policy sets, shows how a negative answer to a query in the form of a \syn{NotPermitted} decision is reached. This listing also shows that a positive decision of \syn{Permitted} is reached in exactly the same way as the case for inclusive policy sets. All cases when a decision of \syn{Unregulated} is rendered are explicitly captured and shown.
+The first listing (~\ref{inclusivePS}) for inclusive policy sets, shows how a positive answer to a query in the form of a \syn{Permitted} decision is reached. All cases when a decision of \syn{Unregulated} is rendered are explicitly captured and shown. The second listing (~\ref{exclusivePS}) for exclusive policy sets, shows how a negative answer to a query in the form of a \syn{NotPermitted} decision is reached. This listing also shows that a positive decision of \syn{Permitted} is reached in exactly the same way as the case for inclusive policy sets. All cases when a decision of \syn{Unregulated} is rendered are explicitly captured and shown.
+
+\lstset{language=pseudo, frame=single, caption={Access Decision Pseudocode: Inclusive Policy Sets}, label={inclusivePS}}
+\begin{lstlisting}
+    IF ($asset\_from\_query = asset\_from\_agreement$)
+      IF ($subject\_from\_query$ is IN $prin\_u$)
+        IF (The $preRequisite$ from the policy set HOLDS)
+          IF (The $preRequisite$ from the policy HOLDS)
+            IF ($action\_from\_query = action\_from\_agreement$)
+              $result$ = $subject\_from\_query$ is Permitted to perform $action\_from\_query$ on $asset\_from\_query$
+            ELSE
+              $result$ = Unregulated
+            END_IF            
+          ELSE
+             $result$ = Unregulated
+          END_IF
+        ELSE
+          $result$ = Unregulated
+        END_IF
+      ELSE
+           $result$ = Unregulated
+      END_IF
+    ELSE
+      $result$ = Unregulated
+    END_IF
+\end{lstlisting}
+
+\lstset{language=pseudo, frame=single, caption={Access Decision Pseudocode: Exclusive Policy Sets}, label={exclusivePS}}
+\begin{lstlisting}
+    IF ($asset\_from\_query = asset\_from\_agreement$)
+      IF ($subject\_from\_query$ is IN $prin\_u$)
+        IF (The $preRequisite$ from the policy set HOLDS)
+          IF (The $preRequisite$ from the policy HOLDS)
+            IF ($action\_from\_query = action\_from\_agreement$)
+              $result$ = $subject\_from\_query$ is Permitted to perform $action\_from\_query$ on $asset\_from\_query$
+            ELSE
+              $result$ = Unregulated
+            END_IF            
+          ELSE
+             $result$ = Unregulated
+          END_IF
+        ELSE
+          $result$ = Unregulated
+        END_IF
+      ELSE
+            IF ($action\_from\_query = action\_from\_agreement$)
+              $result$ = $subject\_from\_query$ is NotPermitted to perform $action\_from\_query$ on $asset\_from\_query$
+            ELSE
+              $result$ = Unregulated
+            END_IF
+      END_IF
+    ELSE
+      $result$ = Unregulated
+    END_IF
+
+\end{lstlisting}
 
  
-\begin{algorithm}[H]
-%\caption{Access Decision Pseudocode: Inclusive Policy Sets}  
-\algCaption{Access Decision Pseudocode: Inclusive Policy Sets}       
-\label{inclusivePS}   
-\begin{algorithmic}        
-    \IF{$asset\_from\_query = asset\_from\_agreement$}
-      \IF{$subject\_from\_query$ is in $prin\_u$}
-        \IF{The $preRequisite$ from the policy set holds}
-          \IF{The $preRequisite$ from the policy holds}
-            \IF{$action\_from\_query = action\_from\_agreement$}
-              \STATE $result$ = $subject\_from\_query$ is $Permitted$ to perform $action\_from\_query$ on $asset\_from\_query$
-            \ELSE
-              \STATE $result$ = $Unregulated$
-            \ENDIF            
-          \ELSE
-             \STATE $result$ = $Unregulated$
-          \ENDIF
-        \ELSE
-          \STATE $result$ = $Unregulated$
-        \ENDIF
-      \ELSE
-           \STATE $result$ = $Unregulated$
-      \ENDIF
-    \ELSE
-      \STATE $result$ = $Unregulated$
-    \ENDIF
-\end{algorithmic}
-\end{algorithm}
-
-\begin{algorithm} [H] 
-%\caption{Access Decision Pseudocode: Exclusive Policy Sets}
-\algCaption{Access Decision Pseudocode: Exclusive Policy Sets}            
-\label{exclusivePS}   
-\begin{algorithmic}        
-    \IF{$asset\_from\_query = asset\_from\_agreement$}
-      \IF{$subject\_from\_query$ is in $prin\_u$}
-        \IF{The $preRequisite$ from the policy set holds}
-          \IF{The $preRequisite$ from the policy holds}
-            \IF{$action\_from\_query = action\_from\_agreement$}
-              \STATE $result$ = $subject\_from\_query$ is $Permitted$ to perform $action\_from\_query$ on $asset\_from\_query$
-            \ELSE
-              \STATE $result$ = $Unregulated$
-            \ENDIF            
-          \ELSE
-             \STATE $result$ = $Unregulated$
-          \ENDIF
-        \ELSE
-          \STATE $result$ = $Unregulated$
-        \ENDIF
-      \ELSE
-            \IF{$action\_from\_query = action\_from\_agreement$}
-              \STATE $result$ = $subject\_from\_query$ is $NotPermitted$ to perform $action\_from\_query$ on $asset\_from\_query$
-            \ELSE
-              \STATE $result$ = $Unregulated$
-            \ENDIF
-      \ENDIF
-    \ELSE
-      \STATE $result$ = $Unregulated$
-    \ENDIF
-\end{algorithmic}
-\end{algorithm}
+%\begin{algorithm}[H]
+%%\caption{Access Decision Pseudocode: Inclusive Policy Sets}  
+%\algCaption{Access Decision Pseudocode: Inclusive Policy Sets}       
+%\label{inclusivePS}   
+%\begin{algorithmic}        
+%    \IF{$asset\_from\_query = asset\_from\_agreement$}
+%      \IF{$subject\_from\_query$ is in $prin\_u$}
+%        \IF{The $preRequisite$ from the policy set holds}
+%          \IF{The $preRequisite$ from the policy holds}
+%            \IF{$action\_from\_query = action\_from\_agreement$}
+%              \STATE $result$ = $subject\_from\_query$ is $Permitted$ to perform $action\_from\_query$ on $asset\_from\_query$
+%            \ELSE
+%              \STATE $result$ = $Unregulated$
+%            \ENDIF            
+%          \ELSE
+%             \STATE $result$ = $Unregulated$
+%          \ENDIF
+%        \ELSE
+%          \STATE $result$ = $Unregulated$
+%        \ENDIF
+%      \ELSE
+%           \STATE $result$ = $Unregulated$
+%      \ENDIF
+%    \ELSE
+%      \STATE $result$ = $Unregulated$
+%    \ENDIF
+%\end{algorithmic}
+%\end{algorithm}
+%
+%\begin{algorithm} [H] 
+%%\caption{Access Decision Pseudocode: Exclusive Policy Sets}
+%\algCaption{Access Decision Pseudocode: Exclusive Policy Sets}            
+%\label{exclusivePS}   
+%\begin{algorithmic}       
+%    \IF{$asset\_from\_query = asset\_from\_agreement$}
+%      \IF{$subject\_from\_query$ is in $prin\_u$}
+%        \IF{The $preRequisite$ from the policy set holds}
+%          \IF{The $preRequisite$ from the policy holds}
+%            \IF{$action\_from\_query = action\_from\_agreement$}
+%              \STATE $result$ = $subject\_from\_query$ is $Permitted$ to perform $action\_from\_query$ on $asset\_from\_query$
+%            \ELSE
+%              \STATE $result$ = $Unregulated$
+%            \ENDIF            
+%          \ELSE
+%             \STATE $result$ = $Unregulated$
+%          \ENDIF
+%        \ELSE
+%          \STATE $result$ = $Unregulated$
+%        \ENDIF
+%      \ELSE
+%            \IF{$action\_from\_query = action\_from\_agreement$}
+%              \STATE $result$ = $subject\_from\_query$ is $NotPermitted$ to perform $action\_from\_query$ on $asset\_from\_query$
+%            \ELSE
+%              \STATE $result$ = $Unregulated$
+%            \ENDIF
+%      \ENDIF
+%    \ELSE
+%      \STATE $result$ = $Unregulated$
+%    \ENDIF
+%\end{algorithmic}
+%\end{algorithm}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
