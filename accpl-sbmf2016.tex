@@ -566,68 +566,6 @@ The first listing (~\ref{inclusivePS}) for inclusive policy sets, shows how a po
 
 \end{lstlisting}
 
- 
-%\begin{algorithm}[H]
-%%\caption{Access Decision Pseudocode: Inclusive Policy Sets}  
-%\algCaption{Access Decision Pseudocode: Inclusive Policy Sets}       
-%\label{inclusivePS}   
-%\begin{algorithmic}        
-%    \IF{$asset\_from\_query = asset\_from\_agreement$}
-%      \IF{$subject\_from\_query$ is in $prin\_u$}
-%        \IF{The $preRequisite$ from the policy set holds}
-%          \IF{The $preRequisite$ from the policy holds}
-%            \IF{$action\_from\_query = action\_from\_agreement$}
-%              \STATE $result$ = $subject\_from\_query$ is $Permitted$ to perform $action\_from\_query$ on $asset\_from\_query$
-%            \ELSE
-%              \STATE $result$ = $Unregulated$
-%            \ENDIF            
-%          \ELSE
-%             \STATE $result$ = $Unregulated$
-%          \ENDIF
-%        \ELSE
-%          \STATE $result$ = $Unregulated$
-%        \ENDIF
-%      \ELSE
-%           \STATE $result$ = $Unregulated$
-%      \ENDIF
-%    \ELSE
-%      \STATE $result$ = $Unregulated$
-%    \ENDIF
-%\end{algorithmic}
-%\end{algorithm}
-%
-%\begin{algorithm} [H] 
-%%\caption{Access Decision Pseudocode: Exclusive Policy Sets}
-%\algCaption{Access Decision Pseudocode: Exclusive Policy Sets}            
-%\label{exclusivePS}   
-%\begin{algorithmic}       
-%    \IF{$asset\_from\_query = asset\_from\_agreement$}
-%      \IF{$subject\_from\_query$ is in $prin\_u$}
-%        \IF{The $preRequisite$ from the policy set holds}
-%          \IF{The $preRequisite$ from the policy holds}
-%            \IF{$action\_from\_query = action\_from\_agreement$}
-%              \STATE $result$ = $subject\_from\_query$ is $Permitted$ to perform $action\_from\_query$ on $asset\_from\_query$
-%            \ELSE
-%              \STATE $result$ = $Unregulated$
-%            \ENDIF            
-%          \ELSE
-%             \STATE $result$ = $Unregulated$
-%          \ENDIF
-%        \ELSE
-%          \STATE $result$ = $Unregulated$
-%        \ENDIF
-%      \ELSE
-%            \IF{$action\_from\_query = action\_from\_agreement$}
-%              \STATE $result$ = $subject\_from\_query$ is $NotPermitted$ to perform $action\_from\_query$ on $asset\_from\_query$
-%            \ELSE
-%              \STATE $result$ = $Unregulated$
-%            \ENDIF
-%      \ENDIF
-%    \ELSE
-%      \STATE $result$ = $Unregulated$
-%    \ENDIF
-%\end{algorithmic}
-%\end{algorithm}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
