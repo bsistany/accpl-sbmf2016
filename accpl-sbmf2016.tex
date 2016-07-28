@@ -566,6 +566,117 @@ The first listing (~\ref{inclusivePS}) for inclusive policy sets, shows how a po
 
 \end{lstlisting}
 
+%%%%% 132-results chapter
+
+\section{Correctness of ACCPL}\label{sec:maintheorems}
+
+The theorem \syn{trans_agreement_dec2} is the declaration of the main correctness result for \ac{ACCPL} (see listing~\ref{lst:agreementdecidablecoq}). Together with other theorems we will describe below, we have ``certified'' \ac{ACCPL} correct by proving this theorem. The nonempty list that the agreement translation function \syn{trans_agreement} returns will contain results one per each primitive policy (\syn{primPolicy}) found in the agreement. Specifically the predicate \\ \syn{isResultInQueryResult} takes a \syn{result} and a nonempty list of \syn{result}'s which \syn{trans_agreement} produces, and calls the \syn{In} predicate. The \syn{In} predicate is adapted from the \syn{Coq.Lists.List} standard library and checks for the existence of the input \syn{result} in the nonempty list of results. Definitions for predicates \syn{isResultInQueryResult} and \syn{In} are listed in listing~\ref{lst:agreementdecidablecoq}. The definitions for \syn{answer} and \syn{result} are repeated in the same listing. 
+
+
+Note that by mentioning the agreement translation function directly in the statement of the theorem~\ref{lst:agreementdecidablecoq}, we tie the correcness property to how the translation functions work. To prove the theorem and with each successive subgoal during the interactive proof process, the definition of the translation function in scope gets unfolded and used so the translation functions have to be defined such that each subgoal is discharged and the proof is completed. 
+
+As an example and also a visual aid to understanding how queries are answered, see listing~\ref{lst:permittedcoq}. The \syn{isResultInQueryResult} predicate looks for a result with an answer of Permitted in the list that \syn{trans_agreement} has produced, for an agreement for three primitive policies (since the set contains three results). In words, we are asking whether Alice is allowed to print the asset ebook, given a policy. 
+
+\lstset{language=Coq, frame=single, caption={Access Request Resulting in Decision of \syn{Permitted}},label={lst:permittedcoq}}
+%\begin{minipage}[c]{0.95\textwidth}
+\begin{lstlisting}
+isResultInQueryResult
+(Result Permitted Alice Print ebook) 
+[ (Result Unregulated Alice Print ebook) ; (Result Unregulated Alice Print ebook) ; (Result Permitted Alice Print ebook) ]
+\end{lstlisting}
+%\end{minipage}
+    
+In the case where the whole set is not comprised of \syn{Unregulated} results, we have two mutually exclusive cases. The first case is when the set has a at least one \syn{Permitted} result; we answer the access query in this case with a result of \syn{Permitted} (this would be the case in the listing~\ref{lst:permittedcoq}). The second case is when the set has at least one \syn{NotPermitted}; we answer the access query in this case with a result of \syn{NotPermitted}. 
+
+
+\lstset{language=Coq, frame=single, caption={Agreement Translation's Correctness Property},label={lst:agreementdecidablecoq}}
+%\begin{minipage}[c]{0.95\textwidth}
+\begin{lstlisting}
+Definition isResultInQueryResult (res:result)(results: nonemptylist result) : Prop :=
+  In res results.
+Fixpoint In (a:X) (l:nonemptylist) : Prop :=
+    match l with
+      | Single s => s=a
+      | NewList s rest => s = a \/ In a rest
+    end.
+Inductive answer : Set :=
+  | Permitted : answer
+  | Unregulated : answer
+  | NotPermitted : answer.
+Inductive result : Set :=
+  | Result : answer -> subject -> act -> asset -> result.
+  
+Theorem trans_agreement_dec2:
+  forall
+  (e:environment)(ag:agreement)(action_from_query:act)
+   (subject_from_query:subject)(asset_from_query:asset),
+   
+ (isResultInQueryResult 
+    (Result Permitted subject_from_query action_from_query asset_from_query)
+    (trans_agreement e ag action_from_query subject_from_query asset_from_query)) 
+\/
+ (isResultInQueryResult 
+    (Result NotPermitted subject_from_query action_from_query asset_from_query)
+    (trans_agreement e ag action_from_query subject_from_query asset_from_query))
+\/
+ (~(isResultInQueryResult 
+    (Result Permitted subject_from_query action_from_query asset_from_query)
+    (trans_agreement e ag action_from_query subject_from_query asset_from_query)) /\
+  ~(isResultInQueryResult 
+    (Result NotPermitted subject_from_query action_from_query asset_from_query)
+    (trans_agreement e ag action_from_query subject_from_query asset_from_query))).
+\end{lstlisting}
+%\end{minipage}
+
+Typically most, if not all of the results will be of type \syn{Unregulated}. In the case where all the results are \syn{Unregulated} we answer the access query with a result of \syn{Unregulated}. We show this case indirectly in the theorem in listing~\ref{lst:agreementdecidablecoq} by stating the set does not contain a \syn{Permitted} result nor a \syn{NotPermitted} result. 
+
+\section{Mutual Exclusivity of \syn{Permitted} and \syn{NotPermitted}}\label{sec:mutualexclusive}
+
+The proof for \syn{trans_agreement_not_Perm_and_NotPerm_at_once} establishes that both \syn{Permitted} and \syn{NotPermitted} results cannot exist in the same set returned by \syn{trans_agreement} (see listing~\ref{lst:permandnotpermmutualexclusive}). This result also establishes the fact that in \ac{ACCPL} rendering conflicting decisions is not possible given an agreement. 
+
+Note that the ``no conflict'' result does not apply across agreements. In particular, we don't handle the case of multiple agreements with the same asset and set of users which may be an interesting sub-case. The result applies to a single agreement and specifically to the \syn{<policySet>} field of an agreement. Recall that the \syn{<policySet>} element expands into the \syn{<policy>} element which in turn contains multiple \syn{<primPolicy>}s each with multiple \syn{<preRequisite>}s. In this way, we cover the majority of cases that conflict detection algorithms typically cover, including the most relevant ones.
+
+\lstset{language=Coq, frame=single, caption={\syn{Permitted} and \syn{NotPermitted}: Mutually Exclusive},label={lst:permandnotpermmutualexclusive}}
+%\begin{minipage}[c]{0.95\textwidth}
+\begin{lstlisting}
+Theorem trans_agreement_not_Perm_and_NotPerm_at_once:
+  forall
+  (e:environment)(ag:agreement)(action_from_query:act)
+   (subject_from_query:subject)(asset_from_query:asset),
+
+ ~((isResultInQueryResult 
+    (Result Permitted subject_from_query action_from_query asset_from_query)
+    (trans_agreement e ag action_from_query subject_from_query asset_from_query)) 
+/\
+ (isResultInQueryResult 
+    (Result NotPermitted subject_from_query action_from_query asset_from_query)
+    (trans_agreement e ag action_from_query subject_from_query asset_from_query))).
+\end{lstlisting}
+%\end{minipage}
+
+The proof for the next theorem \syn{trans_agreement_not_NotPerm_and_not_Perm \newline _implies_Unregulated_dec} shows that in the case where neither a \syn{Permitted} nor a \syn{NotPermitted} result exists in the set returned by \syn{trans_agreement}, there does exist at least one \syn{Unregulated} result (see listing~\ref{lst:notpermandnotpermimpliesunregulated}).
+
+\lstset{language=Coq, frame=single, caption={Not (\syn{Permitted} and \syn{NotPermitted}) Implies \syn{Unregulated}},label={lst:notpermandnotpermimpliesunregulated}}
+%\begin{minipage}[c]{0.95\textwidth}
+\begin{lstlisting}
+Theorem trans_agreement_not_NotPerm_and_not_Perm_implies_Unregulated_dec:
+  forall
+    (e:environment)(ag:agreement)(action_from_query:act)
+    (subject_from_query:subject)(asset_from_query:asset),
+
+    (~(isResultInQueryResult 
+      (Result Permitted subject_from_query action_from_query asset_from_query)
+        (trans_agreement e ag action_from_query subject_from_query asset_from_query)) /\
+
+    ~(isResultInQueryResult 
+      (Result NotPermitted subject_from_query action_from_query asset_from_query)
+        (trans_agreement e ag action_from_query subject_from_query asset_from_query))) ->
+
+   (isResultInQueryResult 
+      (Result Unregulated subject_from_query action_from_query asset_from_query)
+       (trans_agreement e ag action_from_query subject_from_query asset_from_query)).
+\end{lstlisting}
+%\end{minipage}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
