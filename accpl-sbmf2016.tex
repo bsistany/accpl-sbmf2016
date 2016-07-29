@@ -261,7 +261,7 @@ policy analysis, Coq, XACML, DRM, ODRL, SELinux}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Introduction}\label{sec:intro}
 We describe the design of a \ac{ACCPL} and its implementation in the Coq Proof Assistant. Using Coq to implement \ac{ACCPL} was an important factor in its design, allowing us to address the trade-off between expressive power and ease of formal proof of correctness. 
-The semantics of \ac{ACCPL} are specified by translation from policy statements together with an access request and an environment containing all the relevant facts, to decisions. We present results showing the translation functions behave correctly with respect to the decision question that asks whether a request to access a resource may be granted or denied, given a policy. The translation functions also cover the case where a given policy does not apply to a request in which case a decision of non-applicable is rendered. Our results show that for each access request, the translation algorithm terminates on all input policies with a decision of granted, denied or non-applicable. Proving that the translation algorithm terminates on all input policies (given an access request) with a decision of granted, denied or non-applicable, is the specific goal based on which the semantics were defined. We further capture this property as a specification (expressed as an inductive predicate in Coq) and show how the translation algorithm meets this specification for a given policy. 
+The semantics of \ac{ACCPL} are specified by translation from policy statements together with an access request and an environment containing all the relevant facts, to decisions. We present results showing the translation functions behave correctly with respect to the decision question that asks whether a request to access a resource may be granted or denied, given a policy. The translation functions also cover the case where a given policy does not apply to a request in which case a decision of non-applicable is rendered. Our results show that for each access request, the translation algorithm terminates on all input policies with a decision of granted, denied or non-applicable. Proving that the translation algorithm terminates on all input policies (given an access request) with a decision of granted, denied or non-applicable, is the specific goal based on which the semantics were defined. 
 
 To motivate the design of \ac{ACCPL} an access-control policy language, let us review the definition of ``access-control'': Authorization refers to the process of rendering a decision to allow access to a resource or asset of interest. By the same token all unauthorized access requests to resources must be controlled and ultimately denied, hence the term ``access-control''. 
 
@@ -271,28 +271,18 @@ Because of the cited advantages of \ac{pbac} and its generality and wide spread 
 
 \subsection{A Core Policy Language for PBAC Systems} 
 
-Does there already exist a suitable policy language that can be used for expressing general access-control expressions? How about \ac{xacml}~\cite{xacml3pdf}, \ac{odrl}~\cite{odrloneone} or \ac{xrml}~\cite{Wang}? 
+Currently the most popular \ac{rel}s are \ac{xrml}~\cite{Wang}, and \ac{odrl}~\cite{odrloneone}. Both of these languages are XML based and are considered declarative languages. \ac{rel}s, or more precisely \ac{drel}s when dealing with digital assets deal with the ``rights definition'' aspect of the \ac{drm} ecosystem. A \ac{drel}, allows the expression and definition of digital asset usage rights such that other areas of the \ac{drm} ecosystem, namely the enforcement mechanism and the usage tracking components can function correctly.
 
-Currently the most popular \ac{rel}s are \ac{xrml}, and \ac{odrl}. Both of these languages are XML based and are considered declarative languages. \ac{xrml} has been selected by the the Moving Picture Experts Group, MPEG, to be the \ac{rel} for \emph{MPEG-21} which is an ISO standard for multimedia applications. \ac{odrl} is also a standards-based \ac{rel} which has been accepted as part of the W3C community with the mandate of standardizing how rights and policies, related to the usage of digital content on the Open Web Platform, \emph{OWP}~\cite{openwebplatform}, are expressed. \ac{odrl} 2.0 supports expression of rights and also privacy rules for social media while \ac{odrl} 1.0 was only dealing with the mobile ecosystem -- \ac{odrl} 1.0 was adopted by the Open Mobile Alliance, \emph{OMA} in 2000.
+\ac{drm} refers to the digital management of rights associated with the access or usage of digital assets. There are various aspects of rights management however. According to the authors of the white paper ``A digital rights management ecosystem model for the education community''~\cite{collier} digital rights management systems comprise these categories: defining rights, distributing/acquiring rights, enforcing rights and finally tracking usage.
 
-\ac{rel}s, or more precisely \ac{drel}s when dealing with digital assets deal with the ``rights definition'' aspect of the \ac{drm} ecosystem. A \ac{drel}, allows the expression and definition of digital asset usage rights such that other areas of the \ac{drm} ecosystem, namely the enforcement mechanism and the usage tracking components can function correctly.
 
-\ac{drm} refers to the digital management of rights associated with the access or usage of digital assets. There are various aspects of rights management however. According to the authors of the white paper ``A digital rights management ecosystem model for the education community''~\cite{collier} digital rights management systems cover the following four areas: 
-
-\begin{enumerate}
-  \item Defining rights 
-  \item Distributing/Acquiring rights 
-  \item Enforcing rights 
-  \item Tracking usage
-\end{enumerate}
-
-\ac{xacml} is a high-level and platform independent access control system that is also XML based. \ac{xacml} is an OASIS standard which defines a language for the definition of policies and access requests, and a workflow to achieve policy enforcement~\cite{DBLP:conf/essos/MasiPT12}. According to Masi et al~\cite{DBLP:conf/essos/MasiPT12} designing XACML access control policies is difficult and error prone. Furthermore \ac{xacml} comes without a formal semantics as do both \ac{xrml} and \ac{odrl}. The \ac{xacml} standard is written in prose and contains quite a number of loose points that may give rise to different interpretations and lead to different implementation choices~\cite{DBLP:conf/essos/MasiPT12}.
+\ac{xacml} is a high-level and platform independent access control system that is also XML based. No formal semantics is provided for \ac{xacml} similar to both \ac{xrml} and \ac{odrl}. The \ac{xacml} standard is written in prose and contains quite a number of loose points that may give rise to different interpretations and lead to different implementation choices~\cite{DBLP:conf/essos/MasiPT12}.
 
 \ac{xacml}, \ac{odrl} and \ac{xrml} are all \ac{pbac} based languages where \ac{odrl} and \ac{xrml} differ from \ac{xacml} by their focus on digital assets protection and in general \ac{drm}, hence the term \ac{rel}. All three are full-blown and custom languages that have one thing in common; they suffer from a lack of formal semantics. Additionally all of these languages cover much more than policy expressions leading to access decisions; they also address enforcement of policies (\ac{odrl} and \ac{xrml} specifically and \ac{drm} in general distinguish themselves from general access-control languages by additionally addressing enforcement of policies beyond where the policies were generated). A third reason that made these custom languages unsuitable as a core policy language was the fact that they are limited in terms of what can be built on top of them; for example expressing hierarchical role-based access-control  in \ac{xacml} requires a fairly complex encoding~\cite{Tschantz}.
 
-Rights expressions in \ac{drel}s and specifically \ac{odrl} are used to arbitrate access to assets under conditions. The main construct in \ac{odrl} is the ``agreement'' which specifies users, asset(s) and policies whereby controls on users' access to the assets are described. This is very similar to how access control conditions are expressed in access control policy languages such as \ac{xacml}~\cite{xacml} and \ac{selinux}~\cite{selinux}. In fact several authors have worked on interoperability between \ac{rel}s and access control policy languages, specifically between \ac{odrl} and \ac{xacml}~\cite{prados2005interoperability,maronas2009architecture} and also on translation from high level policies of \ac{xacml} to low-level and fine grained policies of \ac{selinux}~\cite{alam2008usage}. 
+Rights expressions in \ac{drel}s and specifically \ac{odrl} are used to arbitrate access to assets under conditions which is very similar to how access control conditions are expressed in access control policy languages such as \ac{xacml} and \ac{selinux}~\cite{selinux}. In fact several authors have worked on interoperability between \ac{rel}s and access control policy languages, specifically between \ac{odrl} and \ac{xacml}~\cite{prados2005interoperability,maronas2009architecture}. 
 
-A policy language based on logic and formal semantics but one that was small and extendible was needed. We use Pucella and Weissman's subset of \ac{odrl}~\cite{pucella2006} as the startinf point for \ac{ACCPL} and in doing so treat digital rights as our main access-control application without loss of generality with respect to other applications, with the final goal of performing formal verification on policies written in \ac{ACCPL}.
+A policy language based on logic and formal semantics but one that was small and extendible was needed. We use Pucella and Weissman's subset of \ac{odrl}~\cite{pucella2006} as the starting point for \ac{ACCPL} and in doing so treat digital rights as our main access-control application without loss of generality with respect to other applications, with the final goal of performing formal verification on policies written in \ac{ACCPL}.
 
 
 
@@ -301,9 +291,7 @@ A policy language based on logic and formal semantics but one that was small and
 %----------------------------------------------------------------------
 
 
-Formal methods help ensure that a system behaves correctly with respect to a specification of its desired behaviour~\cite{TAPL}. This specification of the desired behaviour is what's referred to as \emph{semantics} of the system. Using formal methods requires defining precise and formal semantics, without which analysis and reasoning about properties of the system in question would become impossible. For example, an issue with the current batch of \ac{rel}s are due to their semantics being expressed in a natural language (e.g. English) which by necessity results in ambiguous and open to interpretation behaviour. 
-
-To formalize the semantics of \ac{pbac} languages several approaches have been attempted by various authors. Most are logic based~\cite{Halpern2008,pucella2006} while others are based on finite-automata~\cite{Holzer}, operational semantics based interpreters~\cite{Safavi-naini} and web ontology (from the Knowledge Representation Field)~\cite{Kasten2010MTS}. 
+Formal methods help ensure that a system behaves correctly with respect to a specification of its desired behaviour~\cite{TAPL}. This specification of the desired behaviour is what's referred to as \emph{semantics} of the system. Using formal methods requires defining precise and formal semantics, without which analysis and reasoning about properties of the system in question would become impossible. To formalize the semantics of \ac{pbac} languages several approaches have been attempted by various authors. Most are logic based~\cite{Halpern2008,pucella2006} while others are based on finite-automata~\cite{Holzer}, operational semantics based interpreters~\cite{Safavi-naini} and web ontology (from the Knowledge Representation Field)~\cite{Kasten2010MTS}. 
 
 
 %\subsection{Logic Based Semantics}
@@ -340,9 +328,7 @@ For access to the Coq source code for \ac{ACCPL}, please refer to \url{http://ww
 We follow the style of~\cite{pucella2006} by using abstract syntax to express policy statements in \ac{ACCPL}. 
 
 \subsection{Environmental Facts}\label{sec:odrl0}
-To determine the outcome of policies, specified conditions in those policies are evaluated but to do so environmental facts are often needed. In the \ac{drm} realm with its focus on usage control, certain facts are typically tracked in the environment. The count of how many times an asset has been accessed, the amount a user has paid to access an asset and finally whether a user has made an attribution (e.g. mentioning the content owner by name) are examples of the kind of facts environments hold.
-
-In \ac{ACCPL}, agreements and facts (i.e. environments) will refer to a count of how many times each policy should be used and has been used respectively, to justify an action. 
+To determine the outcome of policies, specified conditions in those policies are evaluated but to do so environmental facts are often needed. In the \ac{drm} realm with its focus on usage control, certain facts are typically tracked in the environment. The count of how many times an asset has been accessed, the amount a user has paid to access an asset and finally whether a user has made an attribution (e.g. mentioning the content owner by name) are examples of the kind of facts environments hold. In \ac{ACCPL}, agreements and facts (i.e. environments) will refer to a count of how many times each policy should be used and has been used respectively, to justify an action. 
 
 \subsection{Abstract Syntax for ACCPL} \label{sec:productionast}
 
@@ -351,7 +337,7 @@ In \ac{ACCPL}, agreements and facts (i.e. environments) will refer to a count of
 \newcommand*{\CommentPP}[1]{\hfill\makebox[3.0cm][l]{#1}}%
 % agreement
 \lstset{mathescape, language=AST, escapechar=\&} 
-\begin{minipage}[c]{0.95\textwidth}
+%\begin{minipage}[c]{0.95\textwidth}
 \begin{lstlisting}[frame=single, caption={Abstract Syntax for ACCPL},label={lst:agreementast}]
 <agreement> ::= 
      'agreement' 'for' <prin> 'about' <asset> 'with' <policySet> 
@@ -386,7 +372,7 @@ In \ac{ACCPL}, agreements and facts (i.e. environments) will refer to a count of
   |  'Count' [N] &\Comment{; number of executions}&
   |  <prin> ('Count' [N]) &\Comment{; number of executions by prin}&     
 \end{lstlisting}
-\end{minipage} 
+%\end{minipage} 
 
 The abstract syntax for \ac{ACCPL} is given in Listing~\ref{lst:agreementast}. The top level production is the \syn{<agreement>}. An agreement expresses what actions a set of subjects may perform on an object and under what conditions. Syntactically an agreement is composed of a set of subjects called a principal or \syn{<prin>}, an \syn{<asset>} and a \syn{<policySet>}. Principals (\syn{<prin>}) are composed of \syn{<subject>}s which are specified based on the application e.g. \syn{Alice}, \syn{Bob}, etc. Assets and actions are also application specific such as \syn{TheReport} and \syn{ebook} for assets and \syn{Display} and \syn{Print} for actions. 
 
@@ -398,19 +384,12 @@ In \ac{ACCPL} a \syn{<primPrerequisite>} is either True or it is a \syn{<constra
 
 Constraints are either of the principal kind, the count kind, or the count by principle kind. Principal constraints require matching to the users listed following the keyword \syn{<prin>}. For example, the constraint of ``the user being Alice'' is a constraint of type principal. A count constraint refers to the number of times the user of an agreement has invoked policies to justify her actions. If the count constraint is part of a policy then the count refers to that single policy. In the case that the count constraint is part of a policy set or if the policy is a conjunction, then the count refers to the set of policies specified in the policy set or in the policy conjunction as the case may be.
 
-
-\section{Introduction to Coq}
-
-Coq is known first and foremost as a proof-assistant. The underlying formal language that Coq uses is a much more expressive version of typed lambda calculus called \ac{cic} where proofs and programs can both be represented. For example, \ac{cic} adds polymorphism (terms depending on types), type operators (types depending on types) and dependent types (types depending on terms).
-
-Specifications of programs in Coq may be expressed using the specification language \emph{Gallina}~\cite{gallinaref}. Coq is then used to develop proofs to show that a program's run-time behaviour satisfies its specification. Such programs are called \emph{certified} because they are formally verified and confirmed to conform to their specifications~\cite{BC04}.
-
 \section{ACCPL Syntax in Coq}\label{sec:agreementConstructor}
 
 \ac{ACCPL} productions were presented as high level abstract syntax in Section~\ref{sec:productionast}. We present the corresponding encodings in Coq in Listing~\ref{lst:agreementcoq}. Note that the data type \syn{nonemptylist} represents a list data structure that has at least one element and data types \syn{asset}, \syn{subject}, \syn{act} and \syn{policyId} are simply defined as Coq's \syn{nat}.
 
 \lstset{language=Coq}
-\begin{minipage}[c]{0.95\textwidth}
+%\begin{minipage}[c]{0.95\textwidth}
 \begin{lstlisting}[frame=single, caption={ACCPL: Coq Version of Agreement},label={lst:agreementcoq}]
 Inductive agreement : Set :=
   | Agreement : prin -> asset -> policySet -> agreement.
@@ -439,22 +418,22 @@ Inductive constraint : Set :=
   | Count : nat -> constraint 
   | CountByPrin : prin -> nat -> constraint.  
 \end{lstlisting}
-\end{minipage}
+%\end{minipage}
 
 We now show the statement expressing ``the asset TheReport may be printed a total of 2 times by Alice only'' in the abstract syntax notation in~\ref{lst:agreementinAST}, as encodings of \ac{ACCPL} constructs in Coq in~\ref{lst:agreementincoq} and finally as an \ac{ACCPL} construct in~\ref{lst:agreementincoq2}.
 
 \lstset{language=Pucella2006}
-\begin{minipage}[c]{0.95\textwidth}
+%\begin{minipage}[c]{0.95\textwidth}
 \begin{lstlisting}[frame=single, caption={First Agreement for Alice and Bob}, label={lst:agreementinAST}, mathescape]
 agreement
  for Alice and Bob
  about The Report
  with True -> and[Alice, count[2]] =>$_{id1}$ print.
 \end{lstlisting}
-\end{minipage}
+%\end{minipage}
 
 \lstset{language=Coq, frame=single, caption={Expressing First Agreement for Alice and Bob in ACCPL}, label={lst:agreementincoq}}
-\begin{minipage}[c]{0.95\textwidth}
+%\begin{minipage}[c]{0.95\textwidth}
 \begin{lstlisting}
 Definition ps_xml_p1prq1:primPreRequisite := 
   (Constraint (Principal (Single Alice))).
@@ -471,10 +450,10 @@ Definition ps_xml:primPolicySet :=
     (makePreRequisite TruePrq) ps_xml_p).
 Definition Axml := Agreement (NewList Alice (Single Bob)) TheReport (PPS ps_xml).
 \end{lstlisting}
-\end{minipage} 
+%\end{minipage} 
 
 \lstset{language=Coq, frame=single, caption={Fully Built First Agreement for Alice and Bob in ACCPL}, label={lst:agreementincoq2}}
-\begin{minipage}[c]{0.95\textwidth}
+%\begin{minipage}[c]{0.95\textwidth}
 \begin{lstlisting}
 Agreement (Alice, [Bob]) TheReport
          (PPS
@@ -487,7 +466,7 @@ Agreement (Alice, [Bob]) TheReport
                             [Constraint (Count 2)])) id1 Print]))))
 
 \end{lstlisting}
-\end{minipage} 
+%\end{minipage} 
 
 %%%% 125-semantics of ACCPL
 \section{Semantics}
