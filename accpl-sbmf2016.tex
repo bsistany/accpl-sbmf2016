@@ -324,7 +324,7 @@ Given that \ac{ACCPL} is a core policy language with semantics that have been ce
 
 For access to the Coq source code for \ac{ACCPL}, please refer to \url{http://www.site.uottawa.ca/~afelty/accpl/}.
 
-\section{ACCPL Abstract Syntax}
+\section{ACCPL}
 %% Coq Syntax chapter
 
 We follow the style of~\cite{pucella2006} by using abstract syntax to express policy statements in \ac{ACCPL}. 
@@ -386,7 +386,7 @@ In \ac{ACCPL} a \syn{<primPrerequisite>} is either \syn{True} or it is a \syn{<c
 
 Constraints are either of the principal kind, the count kind, or the count by principle kind. Principal constraints require matching to the users listed following the keyword \syn{<prin>}. For example, the constraint of ``the user being Alice'' is a constraint of type principal. A count constraint refers to the number of times the user of an agreement has invoked policies to justify her actions. If the count constraint is part of a policy then the count refers to that single policy. In the case that the count constraint is part of a policy set or if the policy is a conjunction, then the count refers to the set of policies specified in the policy set or in the policy conjunction as the case may be.
 
-\section{ACCPL Syntax in Coq}\label{sec:agreementConstructor}
+\subsection{ACCPL Syntax in Coq}\label{sec:agreementConstructor}
 
 \ac{ACCPL} productions were presented as high level abstract syntax in Section~\ref{sec:productionast}. We present the corresponding encodings in Coq in Listing~\ref{lst:agreementcoq}. Note that the data type \syn{nonemptylist} represents a list data structure that has at least one element and data types \syn{asset}, \syn{subject}, \syn{act} and \syn{policyId} are simply defined as Coq's \syn{nat}.
 
@@ -471,7 +471,7 @@ Agreement (Alice, [Bob]) TheReport
 %\end{minipage} 
 
 %%%% 125-semantics of ACCPL
-\section{Semantics}
+\subsection{Semantics}
 We specify the semantics of \ac{ACCPL} as a translation function from an agreement together with an access request and an environment containing all relevant facts, to decisions. This is done based on whether there are proof terms for certain conditions and/or proof terms for the negation of those conditions. The translation functions plus the auxiliary types and infrastructure which implement the semantics for \ac{ACCPL} have been encoded in Coq.
 
 %Whether an agreement and the accompanying access request or query is translated into a decision indicating a permission is granted or denied depends on the agreement in question and the specifics of the request, but also on the number of times a policy has been used to justify an action. We encode this information in Coq as an inductive type representing the environment. An \syn{environment} is a conjunction of equalities of the form \syn{count(subject, policyId) = n} which are called ``count equalities''.
@@ -546,7 +546,7 @@ The first listing (~\ref{inclusivePS}) for inclusive policy sets, shows how a po
 
 %%%%% 132-results chapter
 
-\section{Correctness of ACCPL}\label{sec:maintheorems}
+\subsection{Correctness of ACCPL}\label{sec:maintheorems}
 
 The theorem \syn{trans_agreement_dec2} is the declaration of the main correctness result for \ac{ACCPL} (see listing~\ref{lst:agreementdecidablecoq}). Together with proofs for other theorems and lemmas, we have ``certified'' \ac{ACCPL} correct by proving this theorem. The nonempty list that the agreement translation function \syn{trans_agreement} returns will contain results one per each primitive policy (\syn{primPolicy}) found in the agreement. Specifically the predicate \syn{isResultInQueryResult} takes a \syn{result} and a nonempty list of \syn{result}'s which \syn{trans_agreement} produces, and calls the \syn{In} predicate. The \syn{In} predicate checks for the existence of the input \syn{result} in the nonempty list of results.  
 
@@ -594,7 +594,7 @@ Theorem trans_agreement_dec2:
 
 Typically most, if not all of the results will be of type \syn{Unregulated}. In the case where all the results are \syn{Unregulated} we answer the access query with a result of \syn{Unregulated}. We show this case indirectly in the theorem in listing~\ref{lst:agreementdecidablecoq} by stating the set does not contain a \syn{Permitted} result nor a \syn{NotPermitted} result. 
 
-\section{Mutual Exclusivity of \syn{Permitted} and \syn{NotPermitted}}\label{sec:mutualexclusive}
+\subsection{Mutual Exclusivity of \syn{Permitted} and \syn{NotPermitted}}\label{sec:mutualexclusive}
 
 The proof for \syn{trans_agreement_not_Perm_and_NotPerm_at_once} establishes that both \syn{Permitted} and \syn{NotPermitted} results cannot exist in the same set returned by \syn{trans_agreement} (see listing~\ref{lst:permandnotpermmutualexclusive}). This result also establishes the fact that in \ac{ACCPL} rendering conflicting decisions is not possible given an agreement. 
 
