@@ -229,12 +229,14 @@ pdfstartview=Fit
 %\titlerunning{Short Title}
 
 %Single insitute
-\author{Bahman Sistany \and Amy Felty}
+\author{Bahman Sistany\inst{1,2} \and Amy Felty\inst{1}}
 %If there are too many authors, use \authorrunning
 %\authorrunning{First Author et al.}
-\institute{School of Electrical Engineering and Computer Science,
-  University of Ottawa, Canada\\
-\email{bsistany@yahoo.ca}, \email{afelty@uottawa.ca}
+\institute{School of Electrical Engineering and Computer Science\\
+  University of Ottawa, Ottawa, Canada
+\and
+Irdeto Canada Corporation, Ottawa, Canada\\
+  \email{bahman.sistany@irdeto.com}, \email{afelty@uottawa.ca}
 }
 
 %Multiple insitutes
@@ -488,10 +490,10 @@ The abstract syntax for \ac{ACCPL} is given in Listing~\ref{lst:agreementast}.
 <primPolicySet> ::=  
   <primInclusivePolicySet> &\Comment{; primitive inclusive policy set}&
 | <primExclusivePolicySet> &\Comment{; primitive exclusive policy set}&
-<primExclusivePolicySet> ::=  
-  <prerequisite> $\mapsto$ <policy> &\Comment{; primitive exclusive policy set}&
 <primInclusivePolicySet> ::=  
   <prerequisite> $\rightarrow$ <policy> &\Comment{; primitive inclusive policy set}&
+<primExclusivePolicySet> ::=  
+  <prerequisite> $\mapsto$ <policy> &\Comment{; primitive exclusive policy set}&
 <policy> ::=  
   'and'[ <primPolicy$_{1}$>, ..., 
          <primPolicy$_{m}$> ] &\CommentPP{; conjunction}&
@@ -568,45 +570,60 @@ conjunction as the case may be.
 
 \subsection{ACCPL Syntax in Coq}\label{sec:agreementConstructor}
 
-\ac{ACCPL} productions were presented as high level abstract syntax in Section~\ref{sec:productionast}. We present the corresponding encodings in Coq in Listing~\ref{lst:agreementcoq}. Note that the data type \syn{nonemptylist} represents a list data structure that has at least one element and data types \syn{asset}, \syn{subject}, \syn{act} and \syn{policyId} are simply defined as Coq's \syn{nat}.
+%\ac{ACCPL} productions were presented as high level abstract syntax in Section~\ref{sec:productionast}. We present the corresponding encodings in Coq in Listing~\ref{lst:agreementcoq}. Note that the data type \syn{nonemptylist} represents a list data structure that has at least one element and data types \syn{asset}, \syn{subject}, \syn{act} and \syn{policyId} are simply defined as Coq's \syn{nat}.
+\ac{ACCPL} productions were presented as high level abstract syntax in
+Section~\ref{sec:productionast}. We present the corresponding
+encodings in Coq in Listing~\ref{lst:agreementcoq}. Note that most of
+the policy constructs are defined as inductive types using Coq's
+\syn{Inductive} keyword. Also, note that the data type
+\syn{nonemptylist} represents a list data structure that has at least
+one element.  Finally, the data types \syn{asset}, \syn{subject},
+\syn{act} and \syn{policyId} are simply defined as Coq's built-in type
+\syn{nat}, meaning that their elements are coded as numbers. (Their
+definitions are omitted from the listing.)
 
 \lstset{language=Coq}
 %\begin{minipage}[c]{0.95\textwidth}
 \begin{lstlisting}[frame=single, caption={ACCPL: Coq Version of Agreement},label={lst:agreementcoq}]
 Inductive agreement : Set :=
-  | Agreement : prin -> asset -> policySet -> agreement.
+ | Agreement : prin -> asset -> policySet -> agreement.
 Definition prin := nonemptylist subject.
 Inductive policySet : Set :=
-  | PPS : primPolicySet -> policySet.
+ | PPS : primPolicySet -> policySet.
 Inductive primPolicySet : Set :=
-  | PIPS : primInclusivePolicySet -> primPolicySet
-  | PEPS : primExclusivePolicySet -> primPolicySet.
+ | PIPS : primInclusivePolicySet -> primPolicySet
+ | PEPS : primExclusivePolicySet -> primPolicySet.
 Inductive primInclusivePolicySet : Set :=
-  | PrimitiveInclusivePolicySet : preRequisite -> policy -> primInclusivePolicySet.
+ | PrimitiveInclusivePolicySet : preRequisite -> policy -> primInclusivePolicySet.
 Inductive primExclusivePolicySet : Set :=
-  | PrimitiveExclusivePolicySet : preRequisite -> policy  -> primExclusivePolicySet.
+ | PrimitiveExclusivePolicySet : preRequisite -> policy  -> primExclusivePolicySet.
 Inductive policy : Set :=
-  | Policy : nonemptylist primPolicy -> policy.
+ | Policy : nonemptylist primPolicy -> policy.
 Inductive primPolicy : Set :=
-  | PrimitivePolicy : preRequisite -> policyId -> act -> primPolicy.  
-Inductive primPreRequisite : Set :=
-  | TruePrq : primPreRequisite
-  | Constraint : constraint -> primPreRequisite
-  | NotCons : constraint -> primPreRequisite.
+ | PrimitivePolicy : preRequisite -> policyId -> act -> primPolicy.  
 Inductive preRequisite : Set :=
-  | PreRequisite : nonemptylist primPreRequisite -> preRequisite.
+ | PreRequisite : nonemptylist primPreRequisite -> preRequisite.
+Inductive primPreRequisite : Set :=
+ | TruePrq : primPreRequisite
+ | Constraint : constraint -> primPreRequisite
+ | NotCons : constraint -> primPreRequisite.
 Inductive constraint : Set :=
-  | Principal : prin  -> constraint 
-  | Count : nat -> constraint 
-  | CountByPrin : prin -> nat -> constraint.  
+ | Principal : prin  -> constraint 
+ | Count : nat -> constraint 
+ | CountByPrin : prin -> nat -> constraint.  
 \end{lstlisting}
 %\end{minipage}
 
-We now show the statement expressing ``the asset TheReport may be printed a total of 2 times by Alice only'' in the abstract syntax notation in~\ref{lst:agreementinAST}, as encodings of \ac{ACCPL} constructs in Coq in~\ref{lst:agreementincoq} and finally as an \ac{ACCPL} construct in~\ref{lst:agreementincoq2}.
+%We now show the statement expressing ``the asset TheReport may be printed a total of 2 times by Alice only'' in the abstract syntax notation in~\ref{lst:agreementinAST}, as encodings of \ac{ACCPL} constructs in Coq in~\ref{lst:agreementincoq} and finally as an \ac{ACCPL} construct in~\ref{lst:agreementincoq2}.
+To illustrate, Listing~\ref{lst:agreementinAST} contains an example
+agreement in ACCPL expressing ``the asset TheReport may be printed a
+total of 2 times by Alice only,'' followed by
+Listings~\ref{lst:agreementincoq} and~\ref{lst:agreementincoq2}
+showing its encoding in Coq.
 
 \lstset{language=Pucella2006}
 %\begin{minipage}[c]{0.95\textwidth}
-\begin{lstlisting}[frame=single, caption={First Agreement for Alice and Bob}, label={lst:agreementinAST}, mathescape]
+\begin{lstlisting}[frame=single, caption={Example Agreement for Alice and Bob}, label={lst:agreementinAST}, mathescape]
 agreement
  for Alice and Bob
  about The Report
@@ -614,7 +631,7 @@ agreement
 \end{lstlisting}
 %\end{minipage}
 
-\lstset{language=Coq, frame=single, caption={Expressing First Agreement for Alice and Bob in ACCPL}, label={lst:agreementincoq}}
+\lstset{language=Coq, frame=single, caption={Coq Definitions for Example Agreement}, label={lst:agreementincoq}}
 %\begin{minipage}[c]{0.95\textwidth}
 \begin{lstlisting}
 Definition ps_xml_p1prq1:primPreRequisite := 
@@ -634,7 +651,8 @@ Definition Axml := Agreement (NewList Alice (Single Bob)) TheReport (PPS ps_xml)
 \end{lstlisting}
 %\end{minipage} 
 
-\lstset{language=Coq, frame=single, caption={Fully Built First Agreement for Alice and Bob in ACCPL}, label={lst:agreementincoq2}}
+\lstset{language=Coq, frame=single, caption={Fully Built Example
+    Agreement in Coq}, label={lst:agreementincoq2}}
 %\begin{minipage}[c]{0.95\textwidth}
 \begin{lstlisting}
 Agreement (Alice, [Bob]) TheReport
@@ -652,23 +670,61 @@ Agreement (Alice, [Bob]) TheReport
 
 %%%% 125-semantics of ACCPL
 \section{ACCPL Semantics}
-We specify the semantics of \ac{ACCPL} as a translation function from an agreement together with an access request and an environment containing all relevant facts, to decisions. This is done based on whether there are proof terms for certain conditions and/or proof terms for the negation of those conditions. The translation functions plus the auxiliary types and infrastructure which implement the semantics for \ac{ACCPL} have been encoded in Coq.
+%We specify the semantics of \ac{ACCPL} as a translation function from an agreement together with an access request and an environment containing all relevant facts, to decisions. This is done based on whether there are proof terms for certain conditions and/or proof terms for the negation of those conditions. The translation functions plus the auxiliary types and infrastructure which implement the semantics for \ac{ACCPL} have been encoded in Coq.
+We specify the semantics of \ac{ACCPL} as a translation function from
+an agreement together with an access request and an environment
+containing all relevant facts, to decisions.  In this section, we
+present the algorithms as high-level pseudocode.  The reader is
+referred to the Coq code for their implementation, along with all the
+auxiliary types and infrastructure which implement the semantics for
+\ac{ACCPL}.
 
 %Whether an agreement and the accompanying access request or query is translated into a decision indicating a permission is granted or denied depends on the agreement in question and the specifics of the request, but also on the number of times a policy has been used to justify an action. We encode this information in Coq as an inductive type representing the environment. An \syn{environment} is a conjunction of equalities of the form \syn{count(subject, policyId) = n} which are called ``count equalities''.
 
-The \syn{sumbool} type is a boolean type defined in the Coq standard library; it captures the idea of program values that indicate which of two propositions is true~\cite{chlipalacpdt2011}. The \syn{sumbool} type is equipped with the justification of their value~\cite{Coq:manual} which help with proofs. We have used the \syn{sumbool} type to declare and prove decision procedures that we have subsequently used in the translation functions implementing the semantics and also in the proofs.
+%The \syn{sumbool} type is a boolean type defined in the Coq standard library; it captures the idea of program values that indicate which of two propositions is true~\cite{chlipalacpdt2011}. The \syn{sumbool} type is equipped with the justification of their value~\cite{Coq:manual} which help with proofs. We have used the \syn{sumbool} type to declare and prove decision procedures that we have subsequently used in the translation functions implementing the semantics and also in the proofs.
 
 \subsection{Types of Decisions and their Implementation in Coq}\label{sec:answerandresulttypes}
 
-Policy based access-control languages typically use a two-valued decision set to indicate whether an access request is granted or denied. When a decision for a query is not granted, one design choice for a language is to return an explicit deny decision. However in this case deny stands for ``not permitted''. It is possible to have cases when the policy truly doesn't specify either a permit or a deny decision. In such cases arbitrarily returning the decision of deny makes it difficult to compose policies and in fact, an explicit decision of ``non applicable'' is warranted in such cases. Some languages may decide to only support permit decisions. In such languages lack of a permit decision for a query signifies a deny decision so deny decisions are not explicit. Although the policies of these languages may be more readable than those with more explicit decisions, they result in ambiguity on whether a deny decision was really intended or not. Finally some languages define an explicit decision of ``error'' for cases such as when both permit and deny decisions are reached for the same query. An explicit error decision is preferable to undefined behaviour because it can lead to improvements to policies and/or how the queries are built~\cite{Tschantz}. In \ac{ACCPL} we use a three-valued decision set: \syn{Permitted}, \syn{NotPermitted} and \syn{Unregulated} (used as synonymous with ``non-applicable''). 
+%Policy based access-control languages typically use a two-valued decision set to indicate whether an access request is granted or denied. When a decision for a query is not granted, one design choice for a language is to return an explicit deny decision. However in this case deny stands for ``not permitted''. It is possible to have cases when the policy truly doesn't specify either a permit or a deny decision. In such cases arbitrarily returning the decision of deny makes it difficult to compose policies and in fact, an explicit decision of ``non applicable'' is warranted in such cases. Some languages may decide to only support permit decisions. In such languages lack of a permit decision for a query signifies a deny decision so deny decisions are not explicit. Although the policies of these languages may be more readable than those with more explicit decisions, they result in ambiguity on whether a deny decision was really intended or not. Finally some languages define an explicit decision of ``error'' for cases such as when both permit and deny decisions are reached for the same query. An explicit error decision is preferable to undefined behaviour because it can lead to improvements to policies and/or how the queries are built~\cite{Tschantz}. In \ac{ACCPL} we use a three-valued decision set: \syn{Permitted}, \syn{NotPermitted} and \syn{Unregulated} (used as synonymous with ``non-applicable''). 
+As mentioned, in ACCPL, evaluating a request against a policy renders
+a decision of ``granted'' (also called ``permitted''), ``denied'' or
+``non-applicable.''  Including the ``non-applicable'' decision was
+important for generality and for defining the semantics correctly.
+Some policy based access-control languages use a two-valued decision,
+indicating whether an access request is ``granted'' or ``denied.''  In
+such languages, when a decision for a query does not evaluate to
+``permit,'' the design choice taken is to return an explicit ``deny''
+decision. However in this case ``deny'' stands for ``not permitted.''
+It is desirable to handle the case when the policy truly doesn't
+specify either a ``permit'' or a ``deny'' decision. In such cases
+arbitrarily returning the decision ``deny'' makes it difficult to
+compose policies.  To handle such cases, an explicit decision of ``non
+applicable'' is desirable.  Alternatively, some languages may decide
+to only support ``permit'' decisions. In such languages, the lack of a
+``permit'' decision for a query signifies a default ``deny'' decision,
+and thus ``deny'' decisions are not explicit. Although the policies of
+these languages may be more readable than those with more explicit
+decisions, they result in ambiguity on whether a ``deny'' decision was
+really intended or not. Finally, some languages define an explicit
+decision of ``error'' for cases such as when both ``permit'' and
+``deny'' decisions are reached for the same query. An explicit
+``error'' decision is preferable to undefined behaviour because it can
+lead to improvements to policies and/or how the queries are
+built~\cite{Tschantz}. The Coq encoding of our three-valued decision
+set in \ac{ACCPL} is composed of the constants \syn{Permitted},
+\syn{NotPermitted} and \syn{Unregulated} (used here to denote
+``non-applicable'').
 
 \subsection{Translations}\label{sec:translationfuncs}
 
-Intuitively a query or request asks the following question given an agreement: ``May subject \syn{s} perform an action \syn{ac} to asset \syn{a}?''. We represent a query by its components, namely the subject, action and asset that form the query question: \syn{action_from_query}, \syn{subject_from_query} and \syn{asset_from_query}. 
+Intuitively a query or request asks the following question given an agreement: ``May subject \syn{s} perform an action \syn{ac} to asset \syn{a}?'' We represent a query by its components, namely the subject, action and asset that form the query question: \syn{action_from_query}, \syn{subject_from_query} and \syn{asset_from_query} in Coq. 
 
-In the following we present the high-level description of how the main algorithm (encoded in the translation functions) works in two separate listings based on whether the policy set in question is inclusive or exclusive. 
-
-The first listing (~\ref{inclusivePS}) for inclusive policy sets, shows how a positive answer to a query in the form of a \syn{Permitted} decision is reached. All cases when a decision of \syn{Unregulated} is rendered are explicitly captured and shown. The second listing (~\ref{exclusivePS}) for exclusive policy sets, shows how a negative answer to a query in the form of a \syn{NotPermitted} decision is reached. This listing also shows that a positive decision of \syn{Permitted} is reached in exactly the same way as the case for inclusive policy sets. All cases when a decision of \syn{Unregulated} is rendered are explicitly captured and shown.
+%In the following we present the high-level description of how the main algorithm (encoded in the translation functions) works in two separate listings based on whether the policy set in question is inclusive or exclusive. 
+Below, we present the high-level pseudocode of two functions of the
+main algorithm of the translation function.  They differ based on
+whether the policy set in question is inclusive or exclusive.
+%
+Listing~\ref{inclusivePS} for inclusive policy sets shows how a positive answer to a query in the form of a \syn{Permitted} decision is reached. All cases when a decision of \syn{Unregulated} is rendered are explicitly captured and shown. Listing~\ref{exclusivePS} for exclusive policy sets shows how a negative answer to a query in the form of a \syn{NotPermitted} decision is reached. This listing also shows that a positive decision of \syn{Permitted} is reached in exactly the same way as the case for inclusive policy sets. All cases when a decision of \syn{Unregulated} is rendered are explicitly captured and shown.
 
 \lstset{language=pseudo, frame=single, caption={Access Decision Pseudocode: Inclusive Policy Sets}, label={inclusivePS}}
 \begin{lstlisting}
@@ -734,25 +790,7 @@ for all proofs, the reader is referred to the accompanying Coq code.
 
 \subsection{Correctness of Translation}\label{sec:correct}
 
-The theorem \syn{trans_agreement_dec2} in Listing~\ref{lst:agreementdecidablecoq} is the declaration of the main correctness result for \ac{ACCPL}. Together with proofs for other theorems and lemmas, we have ``certified'' \ac{ACCPL} correct by proving this theorem.
-
-The nonempty list that the agreement translation function \syn{trans_agreement} returns will contain results one per each primitive policy (\syn{primPolicy}) found in the agreement. Specifically the predicate \syn{isResultInQueryResult} takes a \syn{result} and a nonempty list of \syn{result}'s which \syn{trans_agreement} produces, and calls the \syn{In} predicate. The \syn{In} predicate checks for the existence of the input \syn{result} in the nonempty list of results.
-
-Note that by mentioning the agreement translation function directly in the statement of the theorem~\ref{lst:agreementdecidablecoq}, we tie the correctness property to how the translation functions work. To prove the theorem and with each successive subgoal during the interactive proof process, the definition of the translation function in scope gets unfolded and used so the translation functions have to be defined such that each subgoal is discharged and the proof is completed. 
-
-As an example and also a visual aid to understanding how queries are answered, see listing~\ref{lst:permittedcoq}. The \syn{isResultInQueryResult} predicate looks for a result with an answer of Permitted in the list that \syn{trans_agreement} has produced, for an agreement for three primitive policies (since the set contains three results). In words, we are asking whether Alice is allowed to print the asset ebook, given a policy. 
-
-\lstset{language=Coq, frame=single, caption={Access Request Resulting in Decision of \syn{Permitted}},label={lst:permittedcoq}}
-%\begin{minipage}[c]{0.95\textwidth}
-\begin{lstlisting}
-isResultInQueryResult
-(Result Permitted Alice Print ebook) 
-[ (Result Unregulated Alice Print ebook) ; (Result Unregulated Alice Print ebook) ; (Result Permitted Alice Print ebook) ]
-\end{lstlisting}
-%\end{minipage}
-    
-In the case where the whole set is not comprised of \syn{Unregulated} results, we have two mutually exclusive cases. The first case is when the set has a at least one \syn{Permitted} result; we answer the access query in this case with a result of \syn{Permitted} (this would be the case in the listing~\ref{lst:permittedcoq}). The second case is when the set has at least one \syn{NotPermitted}; we answer the access query in this case with a result of \syn{NotPermitted}. 
-
+The theorem in Listing~\ref{lst:agreementdecidablecoq} is the declaration of the main correctness result for \ac{ACCPL}. Together with proofs for other theorems and lemmas, we have ``certified'' \ac{ACCPL} correct by proving this theorem.
 
 \lstset{language=Coq, frame=single, caption={Agreement Translation's Correctness Property},label={lst:agreementdecidablecoq}}
 %\begin{minipage}[c]{0.95\textwidth}
@@ -779,11 +817,42 @@ Theorem trans_agreement_dec2:
 \end{lstlisting}
 %\end{minipage}
 
-Typically most, if not all of the results will be of type \syn{Unregulated}. In the case where all the results are \syn{Unregulated} we answer the access query with a result of \syn{Unregulated}. We show this case indirectly in the theorem in listing~\ref{lst:agreementdecidablecoq} by stating the set does not contain a \syn{Permitted} result nor a \syn{NotPermitted} result. 
+The nonempty list that the agreement translation function \syn{trans_agreement} returns will contain results one per each primitive policy (\syn{primPolicy}) found in the agreement. Specifically the predicate \syn{isResultInQueryResult} takes a \syn{result} and a nonempty list of \syn{result}'s which \syn{trans_agreement} produces, and calls Coq's built-in \syn{In} predicate. This predicate checks for the existence of the input \syn{result} in the nonempty list of results.
+
+Note that by mentioning the agreement translation function directly in the statement of the theorem in Listing~\ref{lst:agreementdecidablecoq}, we tie the correctness property to how the translation functions work. To prove the theorem and with each successive subgoal during the interactive proof process, the definition of the translation function in scope gets unfolded and used so the translation functions have to be defined such that each subgoal is discharged and the proof is completed. 
+
+%As an example and also a visual aid to understanding how queries are answered, see Listing~\ref{lst:permittedcoq}. The \syn{isResultInQueryResult} predicate looks for a result with an answer of Permitted in the list that \syn{trans_agreement} has produced, for an agreement for three primitive policies (since the set contains three results). In words, we are asking whether Alice is allowed to print the asset ebook, given a policy. 
+
+As an example and also a visual aid to understanding how queries are
+answered, see Listing~\ref{lst:permittedcoq}.
+%
+\lstset{language=Coq, frame=single, caption={Access Request Resulting in Decision of \syn{Permitted}},label={lst:permittedcoq}}
+%\begin{minipage}[c]{0.95\textwidth}
+\begin{lstlisting}
+isResultInQueryResult
+(Result Permitted Alice Print ebook) 
+[ (Result Unregulated Alice Print ebook) ; (Result Unregulated Alice Print ebook) ; (Result Permitted Alice Print ebook) ]
+\end{lstlisting}
+%\end{minipage}
+The \syn{isResultInQueryResult} predicate looks for a result with an
+answer of Permitted in the list that \syn{trans_agreement} has
+produced, for an agreement for three primitive policies (since the set
+contains three results). In words, we are asking whether Alice is
+allowed to print the asset ebook, given a policy.
+    
+In the case where the whole set is not comprised of \syn{Unregulated} results, we have two mutually exclusive cases. The first case is when the set has a at least one \syn{Permitted} result; we answer the access query in this case with a result of \syn{Permitted}. (This would be the case in the Listing~\ref{lst:permittedcoq}.) The second case is when the set has at least one \syn{NotPermitted}; we answer the access query in this case with a result of \syn{NotPermitted}. 
+
+Typically most, if not all of the results will be of type \syn{Unregulated}. In the case where all the results are \syn{Unregulated} we answer the access query with a result of \syn{Unregulated}. We show this case indirectly in the theorem in Listing~\ref{lst:agreementdecidablecoq} by stating the set does not contain a \syn{Permitted} result nor a \syn{NotPermitted} result. 
 
 \subsection{Mutual Exclusivity of \syn{Permitted} and \syn{NotPermitted}}\label{sec:mutualexclusive}
 
-The proof for \syn{trans_agreement_not_Perm_and_NotPerm_at_once} establishes that both \syn{Permitted} and \syn{NotPermitted} results cannot exist in the same set returned by \syn{trans_agreement} (see listing~\ref{lst:permandnotpermmutualexclusive}). This result also establishes the fact that in \ac{ACCPL} rendering conflicting decisions is not possible given an agreement. 
+%The proof for \syn{trans_agreement_not_Perm_and_NotPerm_at_once} establishes that both \syn{Permitted} and \syn{NotPermitted} results cannot exist in the same set returned by \syn{trans_agreement} (see listing~\ref{lst:permandnotpermmutualexclusive}). This result also establishes the fact that in \ac{ACCPL} rendering conflicting decisions is not possible given an agreement. 
+The proof of the theorem in
+Listing~\ref{lst:permandnotpermmutualexclusive} establishes that both
+\syn{Permitted} and \syn{NotPermitted} results cannot exist in the
+same set returned by \syn{trans_agreement}.  This result also
+establishes the fact that in \ac{ACCPL} rendering conflicting
+decisions is not possible given an agreement.
 
 \lstset{language=Coq, frame=single, caption={\syn{Permitted} and \syn{NotPermitted}: Mutually Exclusive},label={lst:permandnotpermmutualexclusive}}
 %\begin{minipage}[c]{0.95\textwidth}
@@ -803,7 +872,12 @@ Theorem trans_agreement_not_Perm_and_NotPerm_at_once:
 \end{lstlisting}
 %\end{minipage}
 
-The proof for the next theorem \syn{trans_agreement_not_NotPerm_and_not_Perm \newline _implies_Unregulated_dec} shows that in the case where neither a \syn{Permitted} nor a \syn{NotPermitted} result exists in the set returned by \syn{trans_agreement}, there does exist at least one \syn{Unregulated} result (see listing~\ref{lst:notpermandnotpermimpliesunregulated}).
+%The proof for the next theorem \syn{trans_agreement_not_NotPerm_and_not_Perm \newline _implies_Unregulated_dec} shows that in the case where neither a \syn{Permitted} nor a \syn{NotPermitted} result exists in the set returned by \syn{trans_agreement}, there does exist at least one \syn{Unregulated} result (see listing~\ref{lst:notpermandnotpermimpliesunregulated}).
+The proof of the theorem in
+Listing~\ref{lst:notpermandnotpermimpliesunregulated} shows that in
+the case where neither a \syn{Permitted} nor a \syn{NotPermitted}
+result exists in the set returned by \syn{trans_agreement}, there does
+exist at least one \syn{Unregulated} result.
 
 \lstset{language=Coq, frame=single, caption={Not (\syn{Permitted} and \syn{NotPermitted}) Implies \syn{Unregulated}},label={lst:notpermandnotpermimpliesunregulated}}
 %\begin{minipage}[c]{0.95\textwidth}
@@ -867,18 +941,18 @@ Theorem trans_agreement_not_NotPerm_and_not_Perm_implies_Unregulated_dec:
 %``something in quotes'' using plain tex or use \enquote{the enquote command}.
 
 \section{Conclusion}
-We presented the design and implementation of \ac{ACCPL} as a small and certifiably correct policy language. \ac{ACCPL} is a \ac{pbac} system that can be used to express general access-control rules and policies. In addition we have defined formal semantics for \ac{ACCPL} where we have discovered and added all possible cases when answering a query on whether to allow or deny an action to be performed on an asset. We have subsequently used the Coq Proof Assistant to state theorems about the expected behaviour of \ac{ACCPL} when evaluating a request with respect to a given policy, to develop proofs for those theorems and to machine-check the proofs ensuring correctness guarantees are provided. We have in particular stated, developed and proved a correctness result for the semantics of \ac{ACCPL}. 
+We have presented the design and implementation of \ac{ACCPL} as a small and certifiably correct policy language. \ac{ACCPL} is a \ac{pbac} system that can be used to express general access-control rules and policies. In addition we have defined formal semantics for \ac{ACCPL} where we have discovered and added all possible cases when answering a query on whether to allow or deny an action to be performed on an asset. We have subsequently used the Coq Proof Assistant to state theorems about the expected behaviour of \ac{ACCPL} when evaluating a request with respect to a given policy, to develop proofs for those theorems and to machine-check the proofs ensuring correctness guarantees are provided. We have in particular stated, developed and proved correctness results for the semantics of \ac{ACCPL}. 
 
-We additionally described why certain design choices were made and how they contributed to the ease of reasoning for \ac{ACCPL}. Admittedly some expressive power present in other access-control policy languages was omitted from \ac{ACCPL} in order to achieve the reported correctness proofs. For example, in \ac{ACCPL} we only support base policy sets (policy sets that are not composed of other policy sets) i.e. no combining of base policy sets using conjunctions or other combining operators are supported. 
+Additionally, we have described why certain design choices were made and how they contributed to the ease of reasoning for \ac{ACCPL}. Admittedly some expressive power present in other access-control policy languages was omitted from \ac{ACCPL} in order to achieve the reported correctness proofs. For example, in \ac{ACCPL} we only support base policy sets (policy sets that are not composed of other policy sets) i.e., no combining of base policy sets using conjunctions or other combining operators are supported. 
 
 \subsection{Related Work}
 We review here related work and approaches
-to defining semantics for \ac{pbac} based languages such that one can
+to defining semantics for \ac{pbac} based languages so that one can
 determine without any ambiguity whether a permission or prohibition
 follows from a set of policy statements.
  
 %\subsection{Lithium}
-Halpern and Weissman~\cite{Halpern2008} use \ac{fol} to represent and reason about policies; policies describe the conditions under which a request to perform an action, such as reading a file, is granted or denied. They restrict \ac{fol} to get tractability for answering the query of whether a request to access a resource may be granted or denied, given a policy, and argue that despite the tractability results their language is still expressive. Halpern and Weissman~\cite{Halpern2008} focus on satisfying three requirements in the design of Lithium: expressive enough, tractable enough and usable by non-experts.
+Halpern and Weissman~\cite{Halpern2008} use \ac{fol} to represent and reason about policies; policies describe the conditions under which a request to perform an action, such as reading a file, is granted or denied. They restrict \ac{fol} to get tractability for answering the query of whether a request to access a resource may be granted or denied, given a policy, and argue that despite the tractability results their language is still expressive. The authors focus on satisfying three requirements in the design of their language Lithium: expressive enough, tractable enough and usable by non-experts.
 
 %In contrast, our main goal was designing a core policy language with certifiably correct semantics such that it could be extended in different ways to add expressiveness as long as the semantics would remain certifiably correct with respect to established results for \ac{ACCPL}. We note that \ac{ACCPL} may not be a good candidate to satisfy Halpern and Weissman's first goal. We have not (yet) considered the other Lithium design goals for \ac{ACCPL}.
 %
@@ -902,7 +976,7 @@ Capretta, et al~\cite{CaprettaSFM07} present a conflict detection algorithm for 
 Extending the above work, St-Martin and Felty~\cite{felty16} represent
 policies for a fragment of \ac{xacml} 3.0 in the Coq proof assistant,
 propose an algorithm for detecting all conflicts in \ac{xacml}
-policies, and prove in correct. Their \ac{xacml} subset includes some
+policies, and prove it correct. Their \ac{xacml} subset includes some
 complex conditions such as time constraints. The policy language and
 thus the conflict detection algorithm for XACML is much more complex
 than the one for Cisco firewalls, and resulted in having to consider
@@ -924,7 +998,7 @@ Tschantz and Krishnamurthi's~\cite{Tschantz} present a set of ``reasonability pr
 
 Another direction for future work is to explore different ways \ac{ACCPL} could be made more expressive. For example, we can add various policy combinators and their semantics to \ac{ACCPL} using the translation function framework. The translation function framework we have developed for \ac{ACCPL} is meant to keep the delicate balance between addition of expressiveness while maintaining provability of established results.
 
-A design goal for \ac{ACCPL} was to make it a target language for deploying policies written in other languages. We could capture, implement and study the semantics of these other policy-based access-control systems using the \ac{ACCPL} translation function framework and ultimately certify the semantics of those languages with respect to their specifications the same way \ac{ACCPL} has been certified correct. For example, we can take another \ac{pbac} system such as \ac{xrml} and \ac{odrl}, implement them in Coq as additional (or modifications of) existing \ac{ACCPL} constructs, analyze and reason about them, etc. 
+Another design goal for \ac{ACCPL} was to make it a target language for deploying policies written in other languages. We could capture, implement and study the semantics of these other policy-based access-control systems using the \ac{ACCPL} translation function framework and ultimately certify the semantics of those languages with respect to their specifications the same way \ac{ACCPL} has been certified correct. For example, we can take another \ac{pbac} system such as \ac{xrml} and \ac{odrl}, implement them in Coq as additional or (modifications of) existing \ac{ACCPL} constructs, analyze and reason about them, etc. 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
