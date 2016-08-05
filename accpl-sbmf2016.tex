@@ -456,7 +456,7 @@ correctness are detailed in Section~\ref{sec:maintheorems}.
 % Moved this to the conclusion and integrated it there.    
 %Our results subsume an important sub-category, namely inconsistency or conflict-detection in policy expressions or rules. St-Martin and Felty~\cite{felty16} describe and implement in Coq a conflict detection algorithm for detecting conflicts in \ac{xacml} access control rules. \ac{xacml} is an expressive and at the same time complex policy language which makes conflict detection a difficult task. The authors of~\cite{felty16} then prove the conflict detection algorithm correct (or certified) by developing a formal proof in Coq. The proof is rather complex and involves a large number of cases, including many corner cases that were difficult to get right~\cite{felty16}. For \ac{ACCPL} we have formally proven that conflicts are not possible.
 
-Given that \ac{ACCPL} is a core policy language with semantics that have been certified correct, we could use \ac{ACCPL} to implement various (more expressive) policy languages. In addition \ac{ACCPL} could be used as an intermediate language to reason about interoperability between those policy languages~\cite{prados2005interoperability,maronas2009architecture}. In this manner our language \ac{ACCPL} can be viewed as a extendable language, complete with defined and verified semantics, that can be used as the basis for implementing various policy languages with more expressive power (e.g. W3C's \ac{odrl} and \ac{selinux}). 
+Given that \ac{ACCPL} is a core policy language with semantics that have been certified correct, we could use \ac{ACCPL} to implement various (more expressive) policy languages. In addition \ac{ACCPL} could be used as an intermediate language to reason about interoperability between those policy languages~\cite{prados2005interoperability,maronas2009architecture}. In this manner our language \ac{ACCPL} can be viewed as an extendable language, complete with defined and verified semantics, that can be used as the basis for implementing various policy languages with more expressive power (e.g. W3C's \ac{odrl} and \ac{selinux}). 
 
 For access to the Coq source code for \ac{ACCPL}, please refer to \url{http://www.site.uottawa.ca/~afelty/accpl/}.
 
@@ -684,7 +684,7 @@ Agreement (Alice, [Bob]) TheReport
 %%%% 125-semantics of ACCPL
 \section{ACCPL Semantics}
 %We specify the semantics of \ac{ACCPL} as a translation function from an agreement together with an access request and an environment containing all relevant facts, to decisions. This is done based on whether there are proof terms for certain conditions and/or proof terms for the negation of those conditions. The translation functions plus the auxiliary types and infrastructure which implement the semantics for \ac{ACCPL} have been encoded in Coq.
-We specify the semantics of \ac{ACCPL} as a translation function from
+We specify the semantics of \ac{ACCPL} as a translation function (the top level \syn{trans_agreement} function) from
 an agreement together with an access request and an environment
 containing all relevant facts, to decisions.  In this section, we
 present the algorithms as high-level pseudocode.  The reader is
@@ -733,9 +733,7 @@ set in \ac{ACCPL} is composed of the constants \syn{Permitted},
 Intuitively a query or request asks the following question given an agreement: ``May subject \syn{s} perform an action \syn{ac} to asset \syn{a}?'' We represent a query by its components, namely the subject, action and asset that form the query question: \syn{action_from_query}, \syn{subject_from_query} and \syn{asset_from_query} in Coq. 
 
 %In the following we present the high-level description of how the main algorithm (encoded in the translation functions) works in two separate listings based on whether the policy set in question is inclusive or exclusive. 
-Below, we present the high-level pseudocode of two functions of the
-main algorithm of the translation function.  They differ based on
-whether the policy set in question is inclusive or exclusive.
+Below, we present the high-level pseudocode of the main translation algorithm (implemented in the translation functions starting with \syn{trans_agreement}).
 %
 Listing~\ref{inclusivePS} for inclusive policy sets shows how a positive answer to a query in the form of a \syn{Permitted} decision is reached. All cases when a decision of \syn{Unregulated} is rendered are explicitly captured and shown. Listing~\ref{exclusivePS} for exclusive policy sets shows how a negative answer to a query in the form of a \syn{NotPermitted} decision is reached. This listing also shows that a positive decision of \syn{Permitted} is reached in exactly the same way as the case for inclusive policy sets. All cases when a decision of \syn{Unregulated} is rendered are explicitly captured and shown.
 
