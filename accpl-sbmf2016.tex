@@ -213,7 +213,7 @@ pdfstartview=Fit
 
 \input{list-of-acronyms}
 
-\usepackage{refcheck}
+%\usepackage{refcheck}
 
 \begin{document}
 %\lstset{aboveskip=0pt, belowskip=2pt}
@@ -486,6 +486,7 @@ it to other kinds is straightforward.
 The abstract syntax for \ac{ACCPL} is given in Listing~\ref{lst:agreementast}. 
 \newcommand*{\Comment}[1]{\hfill\makebox[5.0cm][l]{#1}}%
 \newcommand*{\CommentPP}[1]{\hfill\makebox[3.0cm][l]{#1}}%
+\renewcommand{\thelstlisting}{\thesection-\arabic{lstlisting}}%
 % agreement
 \lstset{mathescape, language=AST, escapechar=\&} 
 %\begin{minipage}[c]{0.95\textwidth}
