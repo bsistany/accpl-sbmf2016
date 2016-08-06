@@ -803,12 +803,12 @@ for all proofs, the reader is referred to the accompanying Coq code.
 
 \subsection{Correctness of Translation}\label{sec:correct}
 
-The theorem in Listing~\ref{lst:agreementdecidablecoq} is the declaration of the main correctness result for \ac{ACCPL}. Together with proofs for other theorems and lemmas, we have ``certified'' \ac{ACCPL} correct by proving this theorem.
+The \syn{trans_agreement_dec} theorem in Listing~\ref{lst:agreementdecidablecoq} is the declaration of the main correctness result for \ac{ACCPL}. Together with proofs for other theorems and lemmas, we have ``certified'' \ac{ACCPL} correct by proving this theorem. The list that \syn{trans_agreement} returns will contain results one per each primitive policy found in the agreement. Specifically the predicate \syn{isResultInQueryResult} checks for the existence of a particular result in the given list of results (definition of \syn{result} and \syn{answer} appears at the end of the listing). The theorem states that for all environments, agreements and queries (encoded in \syn{action_from_query}, \syn{subject_from_query} and \syn{asset_from_query}), the list that \syn{trans_agreement} produces contains either a Permitted or a NotPermitted result or the list will contain neither Permitted nor NotPermitted results.
 
 \lstset{language=Coq, frame=single, caption={Agreement Translation's Correctness Property},label={lst:agreementdecidablecoq}}
 %\begin{minipage}[c]{0.95\textwidth}
 \begin{lstlisting}
-Theorem trans_agreement_dec2:
+Theorem trans_agreement_dec:
   forall
   (e:environment)(ag:agreement)(action_from_query:act)
    (subject_from_query:subject)(asset_from_query:asset),
@@ -827,10 +827,15 @@ Theorem trans_agreement_dec2:
   ~(isResultInQueryResult 
     (Result NotPermitted subject_from_query action_from_query asset_from_query)
     (trans_agreement e ag action_from_query subject_from_query asset_from_query))).
+
+Inductive answer : Set := 
+  | Permitted : answer 
+  | Unregulated : answer  | NotPermitted : answer.
+Inductive result : Set := 
+ | Result : answer -> subject -> act -> asset -> result.    
 \end{lstlisting}
 %\end{minipage}
 
-The nonempty list that the agreement translation function \syn{trans_agreement} returns will contain results one per each primitive policy (\syn{primPolicy}) found in the agreement. Specifically the predicate \syn{isResultInQueryResult} checks for the existence of the input \syn{result} in the nonempty list of \syn{result}s (see Listing~\ref{lst:permittedcoq} for definition of \syn{result}).
 
 Note that by mentioning the agreement translation function directly in the statement of the theorem in Listing~\ref{lst:agreementdecidablecoq}, we tie the correctness property to how the translation functions work. To prove the theorem and with each successive subgoal during the interactive proof process, the definition of the translation function in scope gets unfolded and used so the translation functions have to be defined such that each subgoal is discharged and the proof is completed. 
 
@@ -842,12 +847,6 @@ answered, see Listing~\ref{lst:permittedcoq}.
 \lstset{language=Coq, frame=single, columns=flexible, caption={Access Request Resulting in Decision of \syn{Permitted}},label={lst:permittedcoq}}
 %\begin{minipage}[c]{0.95\textwidth}
 \begin{lstlisting}
-Inductive answer : Set := 
-  | Permitted : answer 
-  | Unregulated : answer  | NotPermitted : answer.
-Inductive result : Set := 
- | Result : answer -> subject -> act -> asset -> result.
-
 isResultInQueryResult (Result Permitted Alice Print ebook) [ (Result Unregulated Alice Print ebook) ; (Result Unregulated Alice Print ebook) ; (Result Permitted Alice Print ebook) ]
 \end{lstlisting}
 %\end{minipage}
