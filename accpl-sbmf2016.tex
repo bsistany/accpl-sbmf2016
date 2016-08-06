@@ -444,7 +444,7 @@ As stated earlier, an important part of fulfilling the verifiability goal is to 
 
 We have designed a policy based access-control language called \ac{ACCPL} based on \ac{odrl} and starting with definitions in~\cite{pucella2006}. The \ac{ACCPL} framework has been encoded in \emph{Coq}~\cite{BC04} which is both a programming language and a proof-assistant. We have specified and proved \ac{ACCPL} correct with respect to properties of interest in Coq which will allow us to extract programs from the proofs; the executable programs can be used on specific policies and a query, to render a specific decision such as ``a permission has been granted.'' 
 
-We originally started with a specific subset of~\cite{pucella2006} so that we could concentrate on what we believed to be the essence or core of the language. Initially we intended to maintain the central semantic definitions including ``Closed World Assumptions''~\cite{pucella2006} where the semantics only specify explicitly Permitted and NotPermitted answers; we discovered, however, that the semantics as stated by Pucella and Weissman~\cite{pucella2006} are not explicit and therefore the decision question that asks whether a request to access a resource may be granted or denied, may not be answered in all cases. We have therefore made major modifications to the semantics of Pucella and Weissman's language such that an answer to a request for access to a resource may be determined unambiguously and for all cases. 
+We originally started with a specific subset of~\cite{pucella2006} so that we could concentrate on what we believed to be the essence or core of the language. Initially we intended to maintain the central semantic definitions including ``Closed World Assumptions''~\cite{pucella2006} where the semantics only specify explicitly \syn{Permitted} and \syn{NotPermitted} answers; we discovered, however, that the semantics as stated by Pucella and Weissman~\cite{pucella2006} are not explicit and therefore the decision question that asks whether a request to access a resource may be granted or denied, may not be answered in all cases. We have therefore made major modifications to the semantics of Pucella and Weissman's language such that an answer to a request for access to a resource may be determined unambiguously and for all cases. 
 %
 Specifically, to consider all cases, our program evaluates a request
 against each subpolicy of an agreement and returns one result for
@@ -803,7 +803,7 @@ for all proofs, the reader is referred to the accompanying Coq code.
 
 \subsection{Correctness of Translation}\label{sec:correct}
 
-The \syn{trans_agreement_dec} theorem in Listing~\ref{lst:agreementdecidablecoq} is the declaration of the main correctness result for \ac{ACCPL}. Together with proofs for other theorems and lemmas, we have ``certified'' \ac{ACCPL} correct by proving this theorem. The list that \syn{trans_agreement} returns will contain results one per each primitive policy found in the agreement. Specifically the predicate \syn{isResultInQueryResult} checks for the existence of a particular result in the given list of results (definition of \syn{result} and \syn{answer} appears at the end of the listing). The theorem states that for all environments, agreements and queries (encoded in \syn{action_from_query}, \syn{subject_from_query} and \syn{asset_from_query}), the list that \syn{trans_agreement} produces contains either a Permitted or a NotPermitted result or the list will contain neither Permitted nor NotPermitted results.
+The \syn{trans_agreement_dec} theorem in Listing~\ref{lst:agreementdecidablecoq} is the declaration of the main correctness result for \ac{ACCPL}. Together with proofs for other theorems and lemmas, we have ``certified'' \ac{ACCPL} correct by proving this theorem. The list that \syn{trans_agreement} returns will contain results one per each primitive policy found in the agreement. Specifically the predicate \syn{isResultInQueryResult} checks for the existence of a particular result in the given list of results (definition of \syn{result} and \syn{answer} appears at the end of the listing). The theorem states that for all environments, agreements and queries (encoded in \syn{action_from_query}, \syn{subject_from_query} and \syn{asset_from_query}), the list that \syn{trans_agreement} produces contains either a \syn{Permitted} or a \syn{NotPermitted} result or the list will contain neither \syn{Permitted} nor \syn{NotPermitted} results.
 
 \lstset{language=Coq, frame=single, caption={Agreement Translation's Correctness Property},label={lst:agreementdecidablecoq}}
 %\begin{minipage}[c]{0.95\textwidth}
@@ -815,12 +815,10 @@ Theorem trans_agreement_dec:
    
  (isResultInQueryResult 
     (Result Permitted subject_from_query action_from_query asset_from_query)
-    (trans_agreement e ag action_from_query subject_from_query asset_from_query)) 
-\/
+    (trans_agreement e ag action_from_query subject_from_query asset_from_query)) \/
  (isResultInQueryResult 
     (Result NotPermitted subject_from_query action_from_query asset_from_query)
-    (trans_agreement e ag action_from_query subject_from_query asset_from_query))
-\/
+    (trans_agreement e ag action_from_query subject_from_query asset_from_query)) \/
  (~(isResultInQueryResult 
     (Result Permitted subject_from_query action_from_query asset_from_query)
     (trans_agreement e ag action_from_query subject_from_query asset_from_query)) /\
@@ -851,14 +849,12 @@ isResultInQueryResult (Result Permitted Alice Print ebook) [ (Result Unregulated
 \end{lstlisting}
 %\end{minipage}
 The \syn{isResultInQueryResult} predicate looks for a result with an
-answer of Permitted in the list that \syn{trans_agreement} has
+answer of \syn{Permitted} in the list that \syn{trans_agreement} has
 produced, for an agreement for three primitive policies (since the set
 contains three results). In words, we are asking whether Alice is
 allowed to print the asset ebook, given a policy.
     
-In the case where the whole set is not comprised of \syn{Unregulated} results, we have two mutually exclusive cases. The first case is when the set has a at least one \syn{Permitted} result; we answer the access query in this case with a result of \syn{Permitted}. (This would be the case in the Listing~\ref{lst:permittedcoq}.) The second case is when the set has at least one \syn{NotPermitted}; we answer the access query in this case with a result of \syn{NotPermitted}. 
-
-Typically most, if not all of the results will be of type \syn{Unregulated}. In the case where all the results are \syn{Unregulated} we answer the access query with a result of \syn{Unregulated}. We show this case indirectly in the theorem in Listing~\ref{lst:agreementdecidablecoq} by stating the set does not contain a \syn{Permitted} result nor a \syn{NotPermitted} result. 
+According to the theorem Listing~\ref{lst:agreementdecidablecoq} we have three mutually exclusive cases. The first case is when the set has a at least one \syn{Permitted} result; we answer the access query in this case with a result of \syn{Permitted}. (This would be the case in the Listing~\ref{lst:permittedcoq}.) The second case is when the set has at least one \syn{NotPermitted}; we answer the access query in this case with a result of \syn{NotPermitted}. In the case where all the results are \syn{Unregulated} we answer the access query with a result of \syn{Unregulated}. We show this case indirectly in the theorem in Listing~\ref{lst:agreementdecidablecoq} by stating the set does not contain a \syn{Permitted} result nor a \syn{NotPermitted} result. 
 
 \subsection{Mutual Exclusivity of \syn{Permitted} and \syn{NotPermitted}}\label{sec:mutualexclusive}
 
@@ -880,8 +876,7 @@ Theorem trans_agreement_not_Perm_and_NotPerm_at_once:
 
  ~((isResultInQueryResult 
     (Result Permitted subject_from_query action_from_query asset_from_query)
-    (trans_agreement e ag action_from_query subject_from_query asset_from_query)) 
-/\
+    (trans_agreement e ag action_from_query subject_from_query asset_from_query)) /\
  (isResultInQueryResult 
     (Result NotPermitted subject_from_query action_from_query asset_from_query)
     (trans_agreement e ag action_from_query subject_from_query asset_from_query))).
@@ -906,11 +901,9 @@ Theorem trans_agreement_not_NotPerm_and_not_Perm_implies_Unregulated_dec:
     (~(isResultInQueryResult 
       (Result Permitted subject_from_query action_from_query asset_from_query)
         (trans_agreement e ag action_from_query subject_from_query asset_from_query)) /\
-
     ~(isResultInQueryResult 
       (Result NotPermitted subject_from_query action_from_query asset_from_query)
         (trans_agreement e ag action_from_query subject_from_query asset_from_query))) ->
-
    (isResultInQueryResult 
       (Result Unregulated subject_from_query action_from_query asset_from_query)
        (trans_agreement e ag action_from_query subject_from_query asset_from_query)).
@@ -963,9 +956,7 @@ Additionally, we have described why certain design choices were made and how the
 
 \subsection{Related Work}
 We review here related work and approaches
-to defining semantics for \ac{pbac} based languages so that one can
-determine without any ambiguity whether a permission or prohibition
-follows from a set of policy statements.
+to defining semantics for \ac{pbac} based languages.
  
 %\subsection{Lithium}
 Halpern and Weissman~\cite{Halpern2008} use \ac{fol} to represent and reason about policies; policies describe the conditions under which a request to perform an action, such as reading a file, is granted or denied. They restrict \ac{fol} to get tractability for answering the query of whether a request to access a resource may be granted or denied, given a policy, and argue that despite the tractability results their language is still expressive. The authors focus on satisfying three requirements in the design of their language Lithium: expressive enough, tractable enough and usable by non-experts.
