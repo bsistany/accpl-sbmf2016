@@ -300,14 +300,6 @@ which case a decision of non-applicable is rendered. Our results show
 that for each access request, the translation algorithm terminates on
 all input policies with a decision of granted, denied or
 non-applicable.
-%Proving that the translation algorithm terminates on all input policies (given an access request) with a decision of granted, denied or non-applicable, is the specific goal based on which the semantics were defined.
-
-%To motivate the design of \ac{ACCPL} an access-control policy
-%language, let us review the definition of ``access-control'':
-%Authorization refers to the process of rendering a decision to allow
-%access to a resource or asset of interest. By the same token all
-%unauthorized access requests to resources must be controlled and
-%ultimately denied, hence the term ``access-control''.
 To motivate the design of \ac{ACCPL}, let us review the definition of
 ``access-control'': Authorization refers to the process of rendering a
 decision about whether to permit or deny access to a resource or asset
@@ -315,7 +307,7 @@ of interest, hence the term ``access-control.''
 
 Although various access-control models exist, to harmonize access control in large environments with many subjects and objects and disparate attributes, the \ac{pbac}~\cite{nist} model has been proposed. \ac{pbac} allows for a uniform and central access-control model among the various organizational units. There is also a need for large organizations to put in place mechanisms so that access-control rules can be easily audited. This calls for a data-driven approach to access-control where the data, in this case the access-control rules, are available to read and analyze. 
 
-%Because of the cited advantages of \ac{pbac} and its generality and wide spread use, \ac{pbac} is the model \ac{ACCPL} implements.
+
 Because of the cited advantages, along with its generality and
 widespread use, \ac{pbac} is the model \ac{ACCPL} implements.
 
@@ -324,11 +316,7 @@ widespread use, \ac{pbac} is the model \ac{ACCPL} implements.
 Currently, the most popular \ac{rel}s include the
 \ac{xrml}~\cite{Wang}, and \ac{odrl}~\cite{odrloneone}. Both of these
 languages are XML based and are considered declarative
-languages. 
-%\ac{rel}s, or more precisely \ac{drel}s when dealing with digital
-%assets deal with the ``rights definition'' aspect of the \ac{drm}
-%ecosystem.
-\ac{rel}s, or more precisely \ac{drel}s deal with the ``rights
+languages. \ac{rel}s, or more precisely \ac{drel}s deal with the ``rights
 definition'' aspect of the \ac{drm} ecosystem of digital assets. 
 A \ac{drel}, allows the expression and definition
 of digital asset usage rights so that other areas of the \ac{drm}
@@ -338,21 +326,12 @@ components can function correctly.
 \ac{drm} refers to the digital management of rights associated with
 the access or usage of digital assets. There are various aspects of
 rights management however.
-%According to the authors of the white paper ``A digital rights
-%management ecosystem model for the education
-%community''~\cite{collier}
 According to Collier et.\ al.\ in their white paper~\cite{collier},
 %
 digital rights management systems comprise these categories: defining
 rights, distributing/acquiring rights, enforcing rights and finally
 tracking usage.
 
-%\ac{xacml} is a high-level and platform independent access control
-%system that is also XML based. No formal semantics is provided for
-%\ac{xacml} similar to both \ac{xrml} and \ac{odrl}. The \ac{xacml}
-%standard is written in prose and contains quite a number of loose
-%points that may give rise to different interpretations and lead to
-%different implementation choices~\cite{DBLP:conf/essos/MasiPT12}.
 
 The \ac{xacml}~\cite{xacml3} is another access control policy
 specification language that is general, high-level, and allows
@@ -370,21 +349,6 @@ and access control policy languages, specifically between \ac{odrl}
 and
 \ac{xacml}~\cite{prados2005interoperability,maronas2009architecture}.
 
-%\ac{xacml}, \ac{odrl} and \ac{xrml} are all \ac{pbac} based languages
-%where \ac{odrl} and \ac{xrml} differ from \ac{xacml} by their focus on
-%digital assets protection and in general \ac{drm}, hence the term
-%\ac{rel}. All three are full-blown and custom languages that have one
-%thing in common; they suffer from a lack of formal
-%semantics. Additionally all of these languages cover much more than
-%policy expressions leading to access decisions; they also address
-%enforcement of policies (\ac{odrl} and \ac{xrml} specifically and
-%\ac{drm} in general distinguish themselves from general access-control
-%languages by additionally addressing enforcement of policies beyond
-%where the policies were generated). A third reason that made these
-%custom languages unsuitable as a core policy language was the fact
-%that they are limited in terms of what can be built on top of them;
-%for example expressing hierarchical role-based access-control  in
-%\ac{xacml} requires a fairly complex encoding~\cite{Tschantz}.
 
 For a variety of reasons, we found \ac{xacml}, \ac{odrl} and \ac{xrml}
 all to be ill-suited as the basis for a core policy language.  First,
@@ -403,14 +367,6 @@ top of them; for example expressing hierarchical role-based
 access-control in \ac{xacml} requires a fairly complex
 encoding~\cite{Tschantz}.
 
-%Rights expressions in \ac{drel}s and specifically \ac{odrl} are used
-%to arbitrate access to assets under conditions which is very similar
-%to how access control conditions are expressed in access control
-%policy languages such as \ac{xacml} and
-%\ac{selinux}~\cite{selinux}. In fact several authors have worked on
-%interoperability between \ac{rel}s and access control policy
-%languages, specifically between \ac{odrl} and
-%\ac{xacml}~\cite{prados2005interoperability,maronas2009architecture}.
 
 A policy language based on logic and formal semantics but one that was small and extendible was needed. We use Pucella and Weissman's subset of \ac{odrl}~\cite{pucella2006} as the starting point for \ac{ACCPL} and in doing so treat digital rights as our main access-control application without loss of generality with respect to other applications, with the final goal of performing formal verification on policies written in \ac{ACCPL}.
 
@@ -424,14 +380,6 @@ A policy language based on logic and formal semantics but one that was small and
 Formal methods help ensure that a system behaves correctly with respect to a specification of its desired behaviour~\cite{TAPL}. This specification of the desired behaviour is what's referred to as \emph{semantics} of the system. Using formal methods requires defining precise and formal semantics, without which analysis and reasoning about properties of the system in question would become impossible. To formalize the semantics of \ac{pbac} languages several approaches have been attempted by various authors. Most are logic based~\cite{Halpern2008,pucella2006} while others are based on finite-automata~\cite{Holzer}, operational semantics based interpreters~\cite{Safavi-naini} and web ontology (from the Knowledge Representation Field)~\cite{Kasten2010MTS}. 
 
 
-%\subsection{Logic Based Semantics}
-%
-%
-%Formal logic can represent the statements and facts we express in a natural language like English. Propositional logic is expressive enough to express simple facts as propositions and uses connectives to allow for the negation, conjunction and disjunction of the facts. In addition simple facts can be expressed conditionally using the implication connective. Propositional logic however is not expressive enough to express policies of the kind used in languages like \ac{odrl} and \ac{xrml}. For example, a simple policy expressed in English like ``All who pay 5 dollars can watch the movie Toy Story'' cannot be expressed in propositional logic because the concept of quantifiers doesn't exist in propositional logic. 
-%
-%A richer logic such as ``First Order Logic'' (\emph{FOL}), is more suitable and has the expressive power to represent policies written in English. Moreover, FOL can be used to capture the meaning of policies in an unambiguous way.
-%
-%Halpern and Weissman~\cite{Halpern2008} propose a fragment of FOL to represent and reason about policies. The fragment of FOL they arrive at is called \emph{Lithium} which is decidable and allows for efficiently answering interesting queries. Lithium restricts policies to be written, in part based on the concept of ``bipolarity'' which disallows by construction policies that both permit and deny an action on an object. Pucella and Weissman~\cite{pucella2006} specify a predicate logic based language that represents a subset of ODRL.
 
 
 \subsection{Specific Problem}
@@ -454,8 +402,6 @@ that it is always possible to extract a \emph{coherent} decision.  The
 definitions and theorems required to express this notion of
 correctness are detailed in Section~\ref{sec:maintheorems}.
 
-% Moved this to the conclusion and integrated it there.    
-%Our results subsume an important sub-category, namely inconsistency or conflict-detection in policy expressions or rules. St-Martin and Felty~\cite{felty16} describe and implement in Coq a conflict detection algorithm for detecting conflicts in \ac{xacml} access control rules. \ac{xacml} is an expressive and at the same time complex policy language which makes conflict detection a difficult task. The authors of~\cite{felty16} then prove the conflict detection algorithm correct (or certified) by developing a formal proof in Coq. The proof is rather complex and involves a large number of cases, including many corner cases that were difficult to get right~\cite{felty16}. For \ac{ACCPL} we have formally proven that conflicts are not possible.
 
 Given that \ac{ACCPL} is a core policy language with semantics that have been certified correct, we could use \ac{ACCPL} to implement various (more expressive) policy languages. In addition \ac{ACCPL} could be used as an intermediate language to reason about interoperability between those policy languages~\cite{prados2005interoperability,maronas2009architecture}. In this manner our language \ac{ACCPL} can be viewed as an extendable language, complete with defined and verified semantics, that can be used as the basis for implementing various policy languages with more expressive power (e.g. W3C's \ac{odrl} and \ac{selinux}). 
 
@@ -467,7 +413,6 @@ For access to the Coq source code for \ac{ACCPL}, please refer to \url{http://ww
 We follow the style of~\cite{pucella2006} by using abstract syntax to express policy statements in \ac{ACCPL}. 
 
 \subsection{Environmental Facts}\label{sec:odrl0}
-%To determine the outcome of policies, specified conditions in those policies are evaluated but to do so environmental facts are often needed. In the \ac{drm} realm with its focus on usage control, certain facts are typically tracked in the environment. The count of how many times an asset has been accessed, the amount a user has paid to access an asset and finally whether a user has made an attribution (e.g. mentioning the content owner by name) are examples of the kind of facts environments hold. In \ac{ACCPL}, agreements and facts (i.e. environments) will refer to a count of how many times each policy should be used and has been used respectively, to justify an action. 
 To determine the outcome of requests evaluated against policies,
 specified conditions in those policies must be evaluated with respect
 to environmental facts. In the \ac{drm} realm with its focus on usage
@@ -530,7 +475,6 @@ The abstract syntax for \ac{ACCPL} is given in Listing~\ref{lst:agreementast}.
 %\end{minipage} 
 The top level production is the \syn{<agreement>}. An agreement expresses what actions a set of subjects may perform on an object and under what conditions. Syntactically an agreement is composed of a set of subjects called a principal or \syn{<prin>}, an \syn{<asset>} and a \syn{<policySet>}. Principals (\syn{<prin>}) are composed of subjects (\syn{<subject>}) which are specified based on the application e.g. \syn{Alice}, \syn{Bob}, etc. Assets and actions are also application specific such as \syn{TheReport} and \syn{ebook} for assets and \syn{Display} and \syn{Print} for actions. 
 
-%A policy set is a primitive policy set implying non-nested policy sets. Each primitive policy set specifies a \syn{<prerequisite>} and a \syn{<policy>}. Intuitively if the prerequisite ``holds'' the policy is taken into consideration. Otherwise the policy will not be looked at. Some primitive policy sets are specified as inclusive as opposed to others that are explicitly specified as exclusive. Primitive exclusive policy sets are exclusive to an agreement's users in that only those users may perform the actions specified in the policy set. The implication is that all other users who are not specified in the agreement's principal are forbidden from performing the specified actions, no matter whether the prerequisite holds or not. Not surprisingly we also define primitive inclusive policy sets that don't enforce any exclusivity to the agreement's users.
 A policy set (\syn{<policySet>}) is a primitive policy set
 (\syn{<primPolicySet>}), where the name is meant to signify that there
 is no hierarchical nesting of policy sets. Each primitive policy set
@@ -547,7 +491,6 @@ matter whether the prerequisite holds or not. Not surprisingly, we also
 define primitive inclusive policy sets that don't enforce any
 exclusivity to the agreement's users.
 
-%A primitive policy specifies an action to be performed on an asset, depending on whether the policy's prerequisite holds or not. If the prerequisite holds the agreement's user is permitted to perform the action on the agreement's asset; otherwise permission is denied. A unique identifier for each policy to help the translation (from agreements to formulas), called the policy identifier (\syn{<policyId>}) is included in our definition of the policy construct, however, as far as the proofs are concerned the policy identifier could be removed without a loss to the obtained results. A policy is made up of primitive policies. Primitive policies are grouped together using the conjunction combining operator.
 A policy is made up of primitive policies. Primitive policies are
 grouped together using the conjunction combining operator, specified
 by the keyword \syn{and} in front of the list of the primitive
@@ -562,7 +505,6 @@ translation (from agreements to formulas).  As far as the proofs are
 concerned, however, the policy identifier could be removed without a
 loss to the obtained results.
 
-%In \ac{ACCPL}, a \syn{<primPrerequisite>} is either \syn{True} or it is a \syn{<constraint>}. The \syn{True} prerequisite always holds. A constraint is an intrinsic part of a policy and cannot be influenced by an agreement's users. A constraint can also be negative, specified by the keyword \syn{not} in front of \syn{<constraint>}. A \syn{<prerequisite>} is a set of primitive prerequisites which are closed under conjunction operator specified by the keyword `and' in front of the list of the primitive prerequisites separated by commas.
 A \syn{<prerequisite>} is a set of primitive prerequisites which is
 closed under the conjunction operator.  In \ac{ACCPL}, a
 \syn{<primPrerequisite>} is either \syn{True} or it is a
@@ -571,7 +513,6 @@ constraint is an intrinsic part of a policy and cannot be influenced
 by an agreement's users. A constraint can also be negative, specified
 by the keyword \syn{not} in front of \syn{<constraint>}.
 
-%Constraints are either of the principal kind, the count kind, or the count by principle kind. Principal constraints require matching to the users listed following the keyword \syn{<prin>}. For example, the constraint of ``the user being Alice'' is a constraint of type principal. A count constraint refers to the number of times the user of an agreement has invoked policies to justify her actions. If the count constraint is part of a policy then the count refers to that single policy. In the case that the count constraint is part of a policy set or if the policy is a conjunction, then the count refers to the set of policies specified in the policy set or in the policy conjunction as the case may be.
 Constraints are either of the principal kind, the count kind, or the
 count by principle kind. Principal constraints require matching to the users listed following the keyword \syn{<prin>}. For example, the
 constraint of ``the user being Alice'' is a constraint of the
@@ -585,7 +526,6 @@ conjunction as the case may be.
 
 \subsection{ACCPL Syntax in Coq}\label{sec:agreementConstructor}
 
-%\ac{ACCPL} productions were presented as high level abstract syntax in Section~\ref{sec:productionast}. We present the corresponding encodings in Coq in Listing~\ref{lst:agreementcoq}. Note that the data type \syn{nonemptylist} represents a list data structure that has at least one element and data types \syn{asset}, \syn{subject}, \syn{act} and \syn{policyId} are simply defined as Coq's \syn{nat}.
 \ac{ACCPL} productions were presented as high level abstract syntax in
 Section~\ref{sec:productionast}. We present the corresponding
 encodings in Coq in Listing~\ref{lst:agreementcoq}. Note that most of
@@ -629,7 +569,6 @@ Inductive constraint : Set :=
 \end{lstlisting}
 %\end{minipage}
 
-%We now show the statement expressing ``the asset TheReport may be printed a total of 2 times by Alice only'' in the abstract syntax notation in~\ref{lst:agreementinAST}, as encodings of \ac{ACCPL} constructs in Coq in~\ref{lst:agreementincoq} and finally as an \ac{ACCPL} construct in~\ref{lst:agreementincoq2}.
 To illustrate, Listing~\ref{lst:agreementinAST} contains an example
 agreement in ACCPL expressing ``the asset TheReport may be printed a
 total of 2 times by Alice only,'' followed by
@@ -685,7 +624,6 @@ Agreement (Alice, [Bob]) TheReport
 
 %%%% 125-semantics of ACCPL
 \section{ACCPL Semantics}
-%We specify the semantics of \ac{ACCPL} as a translation function from an agreement together with an access request and an environment containing all relevant facts, to decisions. This is done based on whether there are proof terms for certain conditions and/or proof terms for the negation of those conditions. The translation functions plus the auxiliary types and infrastructure which implement the semantics for \ac{ACCPL} have been encoded in Coq.
 We specify the semantics of \ac{ACCPL} as a translation function (the top level \syn{trans_agreement} function) from
 an agreement together with an access request and an environment
 containing all relevant facts, to decisions.  In this section, we
@@ -694,13 +632,9 @@ referred to the Coq code for their implementation, along with all the
 auxiliary types and infrastructure which implement the semantics for
 \ac{ACCPL}.
 
-%Whether an agreement and the accompanying access request or query is translated into a decision indicating a permission is granted or denied depends on the agreement in question and the specifics of the request, but also on the number of times a policy has been used to justify an action. We encode this information in Coq as an inductive type representing the environment. An \syn{environment} is a conjunction of equalities of the form \syn{count(subject, policyId) = n} which are called ``count equalities''.
-
-%The \syn{sumbool} type is a boolean type defined in the Coq standard library; it captures the idea of program values that indicate which of two propositions is true~\cite{chlipalacpdt2011}. The \syn{sumbool} type is equipped with the justification of their value~\cite{Coq:manual} which help with proofs. We have used the \syn{sumbool} type to declare and prove decision procedures that we have subsequently used in the translation functions implementing the semantics and also in the proofs.
 
 \subsection{Types of Decisions and their Implementation in Coq}\label{sec:answerandresulttypes}
 
-%Policy based access-control languages typically use a two-valued decision set to indicate whether an access request is granted or denied. When a decision for a query is not granted, one design choice for a language is to return an explicit deny decision. However in this case deny stands for ``not permitted''. It is possible to have cases when the policy truly doesn't specify either a permit or a deny decision. In such cases arbitrarily returning the decision of deny makes it difficult to compose policies and in fact, an explicit decision of ``non applicable'' is warranted in such cases. Some languages may decide to only support permit decisions. In such languages lack of a permit decision for a query signifies a deny decision so deny decisions are not explicit. Although the policies of these languages may be more readable than those with more explicit decisions, they result in ambiguity on whether a deny decision was really intended or not. Finally some languages define an explicit decision of ``error'' for cases such as when both permit and deny decisions are reached for the same query. An explicit error decision is preferable to undefined behaviour because it can lead to improvements to policies and/or how the queries are built~\cite{Tschantz}. In \ac{ACCPL} we use a three-valued decision set: \syn{Permitted}, \syn{NotPermitted} and \syn{Unregulated} (used as synonymous with ``non-applicable''). 
 As mentioned, in ACCPL, evaluating a request against a policy renders
 a decision of ``granted'' (also called ``permitted''), ``denied'' or
 ``non-applicable.''  Including the ``non-applicable'' decision was
@@ -734,7 +668,7 @@ set in \ac{ACCPL} is composed of the constants \syn{Permitted},
 
 Intuitively a query or request asks the following question given an agreement: ``May subject \syn{s} perform an action \syn{ac} to asset \syn{a}?'' We represent a query by its components, namely the subject, action and asset that form the query question: \syn{action_from_query}, \syn{subject_from_query} and \syn{asset_from_query} in Coq. 
 
-%In the following we present the high-level description of how the main algorithm (encoded in the translation functions) works in two separate listings based on whether the policy set in question is inclusive or exclusive. 
+ 
 Below, we present the high-level pseudocode of the main translation algorithm (implemented in the translation functions starting with \syn{trans_agreement}).
 %
 Listing~\ref{inclusivePS} for inclusive policy sets shows how a positive answer to a query in the form of a \syn{Permitted} decision is reached. All cases when a decision of \syn{Unregulated} is rendered are explicitly captured and shown. Listing~\ref{exclusivePS} for exclusive policy sets shows how a negative answer to a query in the form of a \syn{NotPermitted} decision is reached. This listing also shows that a positive decision of \syn{Permitted} is reached in exactly the same way as the case for inclusive policy sets. All cases when a decision of \syn{Unregulated} is rendered are explicitly captured and shown.
@@ -837,7 +771,6 @@ Inductive result : Set :=
 
 Note that by mentioning the agreement translation function directly in the statement of the theorem in Listing~\ref{lst:agreementdecidablecoq}, we tie the correctness property to how the translation functions work. To prove the theorem and with each successive subgoal during the interactive proof process, the definition of the translation function in scope gets unfolded and used so the translation functions have to be defined such that each subgoal is discharged and the proof is completed. 
 
-%As an example and also a visual aid to understanding how queries are answered, see Listing~\ref{lst:permittedcoq}. The \syn{isResultInQueryResult} predicate looks for a result with an answer of Permitted in the list that \syn{trans_agreement} has produced, for an agreement for three primitive policies (since the set contains three results). In words, we are asking whether Alice is allowed to print the asset ebook, given a policy. 
 
 As an example and also a visual aid to understanding how queries are
 answered, see Listing~\ref{lst:permittedcoq}.
@@ -858,7 +791,6 @@ According to the theorem Listing~\ref{lst:agreementdecidablecoq} we have three m
 
 \subsection{Mutual Exclusivity of \syn{Permitted} and \syn{NotPermitted}}\label{sec:mutualexclusive}
 
-%The proof for \syn{trans_agreement_not_Perm_and_NotPerm_at_once} establishes that both \syn{Permitted} and \syn{NotPermitted} results cannot exist in the same set returned by \syn{trans_agreement} (see listing~\ref{lst:permandnotpermmutualexclusive}). This result also establishes the fact that in \ac{ACCPL} rendering conflicting decisions is not possible given an agreement. 
 The proof of the theorem in
 Listing~\ref{lst:permandnotpermmutualexclusive} establishes that both
 \syn{Permitted} and \syn{NotPermitted} results cannot exist in the
@@ -883,7 +815,6 @@ Theorem trans_agreement_not_Perm_and_NotPerm_at_once:
 \end{lstlisting}
 %\end{minipage}
 
-%The proof for the next theorem \syn{trans_agreement_not_NotPerm_and_not_Perm \newline _implies_Unregulated_dec} shows that in the case where neither a \syn{Permitted} nor a \syn{NotPermitted} result exists in the set returned by \syn{trans_agreement}, there does exist at least one \syn{Unregulated} result (see listing~\ref{lst:notpermandnotpermimpliesunregulated}).
 The proof of the theorem in
 Listing~\ref{lst:notpermandnotpermimpliesunregulated} shows that in
 the case where neither a \syn{Permitted} nor a \syn{NotPermitted}
@@ -952,7 +883,7 @@ Theorem trans_agreement_not_NotPerm_and_not_Perm_implies_Unregulated_dec:
 \section{Conclusion}
 We have presented the design and implementation of \ac{ACCPL} as a small and certifiably correct policy language. \ac{ACCPL} is a \ac{pbac} system that can be used to express general access-control rules and policies. In addition we have defined formal semantics for \ac{ACCPL} where we have discovered and added all possible cases when answering a query on whether to allow or deny an action to be performed on an asset. We have subsequently used the Coq Proof Assistant to state theorems about the expected behaviour of \ac{ACCPL} when evaluating a request with respect to a given policy, to develop proofs for those theorems and to machine-check the proofs ensuring correctness guarantees are provided. We have in particular stated, developed and proved correctness results for the semantics of \ac{ACCPL}. 
 
-Additionally, we have described why certain design choices were made and how they contributed to the ease of reasoning for \ac{ACCPL}. Admittedly some expressive power present in other access-control policy languages was omitted from \ac{ACCPL} in order to achieve the reported correctness proofs. For example, in \ac{ACCPL} we only support base policy sets (policy sets that are not composed of other policy sets) i.e., no combining of base policy sets using conjunctions or other combining operators are supported. 
+Additionally, we have described why certain design choices were made and how they contributed to the ease of reasoning for \ac{ACCPL}. Admittedly some expressive power present in other access-control policy languages was omitted from \ac{ACCPL} in order to achieve the reported correctness proofs. For example, in \ac{ACCPL} we only support base policy sets (policy sets that are not composed of other policy sets) i.e., no combining of base policy sets using conjunctions or other combining operators are supported. This is~\cite{BahPhd}.
 
 \subsection{Related Work}
 We review here related work and approaches
@@ -961,17 +892,6 @@ to defining semantics for \ac{pbac} based languages.
 %\subsection{Lithium}
 Halpern and Weissman~\cite{Halpern2008} use \ac{fol} to represent and reason about policies; policies describe the conditions under which a request to perform an action, such as reading a file, is granted or denied. They restrict \ac{fol} to get tractability for answering the query of whether a request to access a resource may be granted or denied, given a policy, and argue that despite the tractability results their language is still expressive. The authors focus on satisfying three requirements in the design of their language Lithium: expressive enough, tractable enough and usable by non-experts.
 
-%In contrast, our main goal was designing a core policy language with certifiably correct semantics such that it could be extended in different ways to add expressiveness as long as the semantics would remain certifiably correct with respect to established results for \ac{ACCPL}. We note that \ac{ACCPL} may not be a good candidate to satisfy Halpern and Weissman's first goal. We have not (yet) considered the other Lithium design goals for \ac{ACCPL}.
-%
-
-%\subsection{Trace-based Semantics}
-%Gunter, et al~\cite{GunterWW01} propose an abstract model and a formal language to express access and usage rights for digital assets. A set of ``realities'' representing a sequence of \emph{payment} and \emph{render} (e.g. work is rendered by a device) actions make up a license. Semantics in the authors' model are expressed as a function mapping terms of the language to elements of the domain of licenses. The authors argue that their semantics is similar to those used for concurrency where language constructs are modelled as traces of allowed events.
-
-%\subsection{Semantics Based on Linear Logic}
-%
-%Barth and Mitchell~\cite{BarthM06} express semantics of digital rights using propositional linear logic. Linear logic deals with dynamic properties or finite resources, while classical logic deals with stable truths, or static properties~\cite{Girard87}. Bart and Mitchell introduce the notion of monotonicity which captures the idea that acquiring extra rights by a user should not lead to the user having fewer rights and show that the algorithm the \ac{oma} uses for assigning actions to rights is non-monotonic. Barth and Mitchell consider whether a sequence of actions complies with a license and show that answering this question for the \ac{oma} language is NP-complete. They propose an algorithm based on propositional linear logic to evaluate sequences of actions that is monotonic.
-
-%\subsection{Automata-based Semantics}
 Holzer, et al~\cite{Holzer} give a semantics for \ac{odrl} that models the actions that are allowed according to a contract or an agreement. This model is presented in terms of automata. Each trace through the automaton represents a valid sequence of actions for each participant. The states of the automaton encode the state of the license at each point in time, meaning, which actions are allowed at what point considering the actions that have taken place in the past. 
 
 %\subsection{Operational Semantics}
@@ -991,7 +911,6 @@ many cases including many subtle corner cases.
 
 \subsection{Future Work}
 
-%There are a number of directions that can be taken as future work. In the following we list three distinct directions that could be combined at various stages.
 
 Our results subsume the above results on conflict detection in the
 sense that for \ac{ACCPL}, we have formally proven that conflicts are
