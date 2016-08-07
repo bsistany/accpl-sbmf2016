@@ -730,9 +730,9 @@ Listing~\ref{inclusivePS} for inclusive policy sets shows how a positive answer 
 
 \section{Correctness of ACCPL}\label{sec:maintheorems}
 
-In this section, we present the theorems expressing the most important
-properties we have proved about ACCPL.  For all supporting lemmas and
-for all proofs, the reader is referred to the accompanying Coq code.
+In this section, we present the main theorem and some important supporting theorems, expressing the most important
+properties we have proved about ACCPL. For all other supporting theorems and
+for all proofs, the reader is referred to~\cite{BahPhd} and the accompanying Coq code respectively.
 
 \subsection{Correctness of Translation}\label{sec:correct}
 
@@ -882,7 +882,7 @@ Theorem trans_agreement_not_NotPerm_and_not_Perm_implies_Unregulated_dec:
 \section{Conclusion}
 We have presented the design and implementation of \ac{ACCPL} as a small and certifiably correct policy language. \ac{ACCPL} is a \ac{pbac} system that can be used to express general access-control rules and policies. In addition we have defined formal semantics for \ac{ACCPL} where we have discovered and added all possible cases when answering a query on whether to allow or deny an action to be performed on an asset. We have subsequently used the Coq Proof Assistant to state theorems about the expected behaviour of \ac{ACCPL} when evaluating a request with respect to a given policy, to develop proofs for those theorems and to machine-check the proofs ensuring correctness guarantees are provided. We have in particular stated, developed and proved correctness results for the semantics of \ac{ACCPL}. 
 
-Additionally, we have described why certain design choices were made and how they contributed to the ease of reasoning for \ac{ACCPL}. Admittedly some expressive power present in other access-control policy languages was omitted from \ac{ACCPL} in order to achieve the reported correctness proofs. For example, in \ac{ACCPL} we only support base policy sets (policy sets that are not composed of other policy sets) i.e., no combining of base policy sets using conjunctions or other combining operators are supported. This is~\cite{BahPhd}.
+Additionally, we have described why certain design choices were made and how they contributed to the ease of reasoning for \ac{ACCPL}. Admittedly some expressive power present in other access-control policy languages was omitted from \ac{ACCPL} in order to achieve the reported correctness proofs. For example, in \ac{ACCPL} we only support base policy sets (policy sets that are not composed of other policy sets) i.e., no combining of base policy sets using conjunctions or other combining operators are supported.
 
 \subsection{Related Work}
 We review here related work and approaches
@@ -919,11 +919,12 @@ power of existing policy languages, this property will likely no
 longer hold.  By starting with a conflict-free core, our goal is to
 keep conflict detection as simple as possible as we add more features.
 
-Tschantz and Krishnamurthi's~\cite{Tschantz} present a set of ``reasonability properties'' to analyze the behaviour of policies in light of additional and/or explicit environmental facts and policy growth and decomposition. We conjecture that \ac{ACCPL} supports these properties: it is deterministic, total, safe, and it has independent composition property and supports a monotonic policy combinator. However, we have not yet certified (using formal proofs) that \ac{ACCPL} has these properties, as we claim. We defer proving these properties for \ac{ACCPL} as future work. 
+Tschantz and Krishnamurthi~\cite{Tschantz} argue for the need for formal means to compare and contrast policy-based access-control languages with respect to a set of ``reasonability properties'' common to policy-based access-control languages. We describe in~\cite{BahPhd} why \ac{ACCPL} is deterministic, total, safe, has independent composition property and supports a monotonic policy combinator (Tschantz and Krishnamurthi's reasonability properties). However, we have not yet certified (using formal proofs) that \ac{ACCPL} has these properties, as we claim. We defer proving these properties for \ac{ACCPL} as future work. 
 
 Another direction for future work is to explore different ways \ac{ACCPL} could be made more expressive. For example, we can add various policy combinators and their semantics to \ac{ACCPL} using the translation function framework. The translation function framework we have developed for \ac{ACCPL} is meant to keep the delicate balance between addition of expressiveness while maintaining provability of established results.
 
-Another design goal for \ac{ACCPL} was to make it a target language for deploying policies written in other languages. We could capture, implement and study the semantics of these other policy-based access-control systems using the \ac{ACCPL} translation function framework and ultimately certify the semantics of those languages with respect to their specifications the same way \ac{ACCPL} has been certified correct. For example, we can take another \ac{pbac} system such as \ac{xrml} and \ac{odrl}, implement them in Coq as additional or (modifications of) existing \ac{ACCPL} constructs, analyze and reason about them, etc. 
+Another design goal for \ac{ACCPL} was to make it a target language for deploying policies written in other languages. We could capture, implement and study the semantics of these other policy-based access-control systems using the \ac{ACCPL} translation function framework and ultimately certify the semantics of those languages with respect to their specifications the same way \ac{ACCPL} has been certified correct. 
+%For example, we can take another \ac{pbac} system such as \ac{xrml} and \ac{odrl}, implement them in Coq as additional or (modifications of) existing \ac{ACCPL} constructs, analyze and reason about them, etc. 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
