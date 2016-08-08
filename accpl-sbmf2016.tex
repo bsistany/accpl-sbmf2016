@@ -432,7 +432,7 @@ The abstract syntax for \ac{ACCPL} is given in Listing~\ref{lst:agreementast}.
 \newcommand*{\CommentPP}[1]{\hfill\makebox[3.0cm][l]{#1}}%
 \renewcommand{\thelstlisting}{\thesection-\arabic{lstlisting}}%
 % agreement
-\lstset{mathescape, language=AST, escapechar=\&} 
+\lstset{mathescape, captionpos=b, language=AST, escapechar=\&} 
 %\begin{minipage}[c]{0.95\textwidth}
 % order of elements changed so that every construct appears after it
 % is mentioned in a previous construct
@@ -536,7 +536,7 @@ one element.  Finally, the data types \syn{asset}, \syn{subject},
 \syn{nat}, meaning that their elements are coded as numbers. (Their
 definitions are omitted from the listing.)
 
-\lstset{language=Coq}
+\lstset{language=Coq, captionpos=b}
 %\begin{minipage}[c]{0.95\textwidth}
 \begin{lstlisting}[frame=single, caption={ACCPL: Coq Version of Agreement},label={lst:agreementcoq}]
 Inductive agreement : Set :=
@@ -574,7 +574,7 @@ total of 2 times by Alice only,'' followed by
 Listings~\ref{lst:agreementincoq} and~\ref{lst:agreementincoq2}
 showing its encoding in Coq.
 
-\lstset{language=Pucella2006}
+\lstset{language=Pucella2006, captionpos=b}
 %\begin{minipage}[c]{0.95\textwidth}
 \begin{lstlisting}[frame=single, caption={Example Agreement for Alice and Bob}, label={lst:agreementinAST}, mathescape]
 agreement
@@ -584,7 +584,7 @@ agreement
 \end{lstlisting}
 %\end{minipage}
 
-\lstset{language=Coq, frame=single, caption={Coq Definitions for Example Agreement}, label={lst:agreementincoq}}
+\lstset{language=Coq, frame=single, captionpos=b, caption={Coq Definitions for Example Agreement}, label={lst:agreementincoq}}
 %\begin{minipage}[c]{0.95\textwidth}
 \begin{lstlisting}
 Definition ps_xml_p1prq1:primPreRequisite := 
@@ -604,7 +604,7 @@ Definition Axml := Agreement (NewList Alice (Single Bob)) TheReport (PPS ps_xml)
 \end{lstlisting}
 %\end{minipage} 
 
-\lstset{language=Coq, frame=single, caption={Fully Built Example
+\lstset{language=Coq, frame=single, captionpos=b, caption={Fully Built Example
     Agreement in Coq}, label={lst:agreementincoq2}}
 %\begin{minipage}[c]{0.95\textwidth}
 \begin{lstlisting}
@@ -672,7 +672,7 @@ Below, we present the high-level pseudocode of the main translation algorithm (i
 %
 Listing~\ref{inclusivePS} for inclusive policy sets shows how a positive answer to a query in the form of a \syn{Permitted} decision is reached. All cases when a decision of \syn{Unregulated} is rendered are explicitly captured and shown. Listing~\ref{exclusivePS} for exclusive policy sets shows how a negative answer to a query in the form of a \syn{NotPermitted} decision is reached. This listing also shows that a positive decision of \syn{Permitted} is reached in exactly the same way as the case for inclusive policy sets. All cases when a decision of \syn{Unregulated} is rendered are explicitly captured and shown.
 
-\lstset{language=pseudo, frame=single, caption={Access Decision Pseudocode: Inclusive Policy Sets}, label={inclusivePS}}
+\lstset{language=pseudo, frame=single, captionpos=b, caption={Access Decision Pseudocode: Inclusive Policy Sets}, label={inclusivePS}}
 \begin{lstlisting}
     IF ($asset\_from\_query = asset\_from\_agreement$)
       IF ($subject\_from\_query$ is IN $prin\_u$)
@@ -697,7 +697,7 @@ Listing~\ref{inclusivePS} for inclusive policy sets shows how a positive answer 
     END_IF
 \end{lstlisting}
 
-\lstset{language=pseudo, frame=single, caption={Access Decision Pseudocode: Exclusive Policy Sets}, label={exclusivePS}}
+\lstset{language=pseudo, frame=single, captionpos=b, caption={Access Decision Pseudocode: Exclusive Policy Sets}, label={exclusivePS}}
 \begin{lstlisting}
     IF ($asset\_from\_query = asset\_from\_agreement$)
       IF ($subject\_from\_query$ is IN $prin\_u$)
@@ -738,7 +738,7 @@ for all proofs, the reader is referred to~\cite{BahPhd} and the accompanying Coq
 
 The \syn{trans_agreement_dec} theorem in Listing~\ref{lst:agreementdecidablecoq} is the declaration of the main correctness result for \ac{ACCPL}. Together with proofs for other theorems and lemmas, we have ``certified'' \ac{ACCPL} correct by proving this theorem. The list that \syn{trans_agreement} returns will contain results one per each primitive policy found in the agreement. Specifically the predicate \syn{isResultInQueryResult} checks for the existence of a particular result in the given list of results (definition of \syn{result} and \syn{answer} appears at the end of the listing). The theorem states that for all environments, agreements and queries (encoded in \syn{action_from_query}, \syn{subject_from_query} and \syn{asset_from_query}), the list that \syn{trans_agreement} produces contains either a \syn{Permitted} or a \syn{NotPermitted} result or the list will contain neither \syn{Permitted} nor \syn{NotPermitted} results.
 
-\lstset{language=Coq, frame=single, caption={Agreement Translation's Correctness Property},label={lst:agreementdecidablecoq}}
+\lstset{language=Coq, frame=single, captionpos=b, caption={Agreement Translation's Correctness Property},label={lst:agreementdecidablecoq}}
 %\begin{minipage}[c]{0.95\textwidth}
 \begin{lstlisting}
 Theorem trans_agreement_dec:
@@ -774,7 +774,7 @@ Note that by mentioning the agreement translation function directly in the state
 As an example and also a visual aid to understanding how queries are
 answered, see Listing~\ref{lst:permittedcoq}.
 %
-\lstset{language=Coq, frame=single, columns=flexible, caption={Access Request Resulting in Decision of \syn{Permitted}},label={lst:permittedcoq}}
+\lstset{language=Coq, frame=single, columns=flexible, captionpos=b, caption={Access Request Resulting in Decision of \syn{Permitted}},label={lst:permittedcoq}}
 %\begin{minipage}[c]{0.95\textwidth}
 \begin{lstlisting}
 isResultInQueryResult (Result Permitted Alice Print ebook) [ (Result Unregulated Alice Print ebook) ; (Result Unregulated Alice Print ebook) ; (Result Permitted Alice Print ebook) ]
@@ -797,7 +797,7 @@ same set returned by \syn{trans_agreement}.  This result also
 establishes the fact that in \ac{ACCPL} rendering conflicting
 decisions is not possible given an agreement.
 
-\lstset{language=Coq, frame=single, caption={\syn{Permitted} and \syn{NotPermitted}: Mutually Exclusive},label={lst:permandnotpermmutualexclusive}}
+\lstset{language=Coq, frame=single, captionpos=b, caption={\syn{Permitted} and \syn{NotPermitted}: Mutually Exclusive},label={lst:permandnotpermmutualexclusive}}
 %\begin{minipage}[c]{0.95\textwidth}
 \begin{lstlisting}
 Theorem trans_agreement_not_Perm_and_NotPerm_at_once:
@@ -820,7 +820,7 @@ the case where neither a \syn{Permitted} nor a \syn{NotPermitted}
 result exists in the set returned by \syn{trans_agreement}, there does
 exist at least one \syn{Unregulated} result.
 
-\lstset{language=Coq, frame=single, caption={Not (\syn{Permitted} and \syn{NotPermitted}) Implies \syn{Unregulated}},label={lst:notpermandnotpermimpliesunregulated}}
+\lstset{language=Coq, frame=single, captionpos=b, caption={Not (\syn{Permitted} and \syn{NotPermitted}) Implies \syn{Unregulated}},label={lst:notpermandnotpermimpliesunregulated}}
 %\begin{minipage}[c]{0.95\textwidth}
 \begin{lstlisting}
 Theorem trans_agreement_not_NotPerm_and_not_Perm_implies_Unregulated_dec:
