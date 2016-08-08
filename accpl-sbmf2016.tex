@@ -402,7 +402,7 @@ definitions and theorems required to express this notion of
 correctness are detailed in Section~\ref{sec:maintheorems}.
 
 
-Given that \ac{ACCPL} is a core policy language with semantics that have been certified correct, we could use \ac{ACCPL} to implement various (more expressive) policy languages. In addition \ac{ACCPL} could be used as an intermediate language to reason about interoperability between those policy languages~\cite{prados2005interoperability,maronas2009architecture}. In this manner our language \ac{ACCPL} can be viewed as an extendable language, complete with defined and verified semantics, that can be used as the basis for implementing various policy languages with more expressive power (e.g. W3C's \ac{odrl} and \ac{selinux}). 
+Given that \ac{ACCPL} is a core policy language with semantics that have been certified correct, we could use \ac{ACCPL} to implement various (more expressive) policy languages. In addition \ac{ACCPL} could be used as an intermediate language to reason about interoperability between those policy languages~\cite{prados2005interoperability,maronas2009architecture}. In this manner our language \ac{ACCPL} can be viewed as an extendable language, complete with defined and verified semantics, that can be used as the basis for implementing various policy languages with more expressive power. 
 
 For access to the Coq source code for \ac{ACCPL}, please refer to \url{http://www.site.uottawa.ca/~afelty/accpl/}.
 
@@ -417,9 +417,7 @@ specified conditions in those policies must be evaluated with respect
 to environmental facts. In the \ac{drm} realm with its focus on usage
 control, the kinds of facts that are typically tracked in the
 environment include a count of how many times an asset has been
-accessed, the amount a user has paid to access an asset, and whether a
-user has made an attribution (e.g. mentioning the content owner by
-name). In \ac{ACCPL}, agreements and facts (i.e. environments) will
+accessed, or perhaps the amount a user has paid to access an asset. In \ac{ACCPL}, agreements and facts (i.e. environments) will
 refer to a count of how many times each policy should be used and has
 been used respectively, to justify an action.
 Although our core language includes only one kind of fact, extending
@@ -698,6 +696,7 @@ Listing~\ref{inclusivePS} for inclusive policy sets shows how a positive answer 
 \end{lstlisting}
 
 \lstset{language=pseudo, frame=single, captionpos=b, caption={Access Decision Pseudocode: Exclusive Policy Sets}, label={exclusivePS}}
+%\begin{minipage}[c]{0.95\textwidth}
 \begin{lstlisting}
     IF ($asset\_from\_query = asset\_from\_agreement$)
       IF ($subject\_from\_query$ is IN $prin\_u$)
@@ -725,9 +724,9 @@ Listing~\ref{inclusivePS} for inclusive policy sets shows how a positive answer 
       $result$ = Unregulated
     END_IF
 \end{lstlisting}
-
+%\end{minipage}
 %%%%% 132-results chapter
-
+\pagebreak
 \section{Correctness of ACCPL}\label{sec:maintheorems}
 
 In this section, we present the main theorem and some important supporting theorems, expressing the most important
@@ -919,7 +918,7 @@ power of existing policy languages, this property will likely no
 longer hold.  By starting with a conflict-free core, our goal is to
 keep conflict detection as simple as possible as we add more features.
 
-Tschantz and Krishnamurthi~\cite{Tschantz} argue for the need for formal means to compare and contrast policy-based access-control languages with respect to a set of ``reasonability properties'' common to policy-based access-control languages. We describe in~\cite{BahPhd} why \ac{ACCPL} is deterministic, total, safe, has independent composition property and supports a monotonic policy combinator (Tschantz and Krishnamurthi's reasonability properties). However, we have not yet certified (using formal proofs) that \ac{ACCPL} has these properties, as we claim. We defer proving these properties for \ac{ACCPL} as future work. 
+Tschantz and Krishnamurthi~\cite{Tschantz} argue for the need for formal means to compare and contrast \ac{pbac} languages with respect to a set of common ``reasonability properties''. We describe in~\cite{BahPhd} why \ac{ACCPL} is deterministic, total, safe, has independent composition property and supports a monotonic policy combinator (Tschantz and Krishnamurthi's reasonability properties). However, we have not yet certified (using formal proofs) that \ac{ACCPL} has these properties, as we claim. We defer proving these properties for \ac{ACCPL} as future work. 
 
 Another direction for future work is to explore different ways \ac{ACCPL} could be made more expressive. For example, we can add various policy combinators and their semantics to \ac{ACCPL} using the translation function framework. The translation function framework we have developed for \ac{ACCPL} is meant to keep the delicate balance between addition of expressiveness while maintaining provability of established results.
 
