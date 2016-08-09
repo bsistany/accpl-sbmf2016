@@ -633,33 +633,29 @@ auxiliary types and infrastructure which implement the semantics for
 \subsection{Types of Decisions and their Implementation in Coq}\label{sec:answerandresulttypes}
 
 As mentioned, in ACCPL, evaluating a request against a policy renders
-a decision of ``granted'' (also called ``permitted''), ``denied'' or
-``non-applicable.''  Including the ``non-applicable'' decision was
+a granted, denied or non-applicable decision. Including the non-applicable decision was
 important for generality and for defining the semantics correctly.
 Some policy based access-control languages use a two-valued decision,
-indicating whether an access request is ``granted'' or ``denied.''  In
-such languages, when a decision for a query does not evaluate to
-``permit,'' the design choice taken is to return an explicit ``deny''
-decision. However in this case ``deny'' stands for ``not permitted.''
+indicating whether an access request is granted or denied.  In
+such languages, when a decision for a query does not evaluate to a granted decision, the design choice taken is to return an explicit deny
+decision. However in this case deny stands for ``not granted''.
 It is desirable to handle the case when the policy truly doesn't
-specify either a ``permit'' or a ``deny'' decision. In such cases
-arbitrarily returning the decision ``deny'' makes it difficult to
-compose policies.  To handle such cases, an explicit decision of ``non
-applicable'' is desirable.  Alternatively, some languages may decide
-to only support ``permit'' decisions. In such languages, the lack of a
-``permit'' decision for a query signifies a default ``deny'' decision,
-and thus ``deny'' decisions are not explicit. Although the policies of
+specify either a granted or a deny decision. In such cases
+arbitrarily returning the deny decision makes it difficult to
+compose policies.  To handle such cases, an explicit decision of non-applicable is desirable.  Alternatively, some languages may decide
+to only support granted type decisions. In such languages, the lack of a
+granted decision for a query signifies a default deny decision,
+and thus deny decisions are not explicit. Although the policies of
 these languages may be more readable than those with more explicit
-decisions, they result in ambiguity on whether a ``deny'' decision was
+decisions, they result in ambiguity on whether a deny decision was
 really intended or not. Finally, some languages define an explicit
-decision of ``error'' for cases such as when both ``permit'' and
-``deny'' decisions are reached for the same query. An explicit
-``error'' decision is preferable to undefined behaviour because it can
+decision of error for cases such as when both granted and
+deny decisions are reached for the same query. An explicit
+error decision is preferable to undefined behaviour because it can
 lead to improvements to policies and/or how the queries are
 built~\cite{Tschantz}. The Coq encoding of our three-valued decision
 set in \ac{ACCPL} is composed of the constants \syn{Permitted},
-\syn{NotPermitted} and \syn{Unregulated} (used here to denote
-``non-applicable'').
+\syn{NotPermitted} and \syn{Unregulated}.
 
 \subsection{Translations}\label{sec:translationfuncs}
 
@@ -878,12 +874,8 @@ Theorem trans_agreement_not_NotPerm_and_not_Perm_implies_Unregulated_dec:
 %
 %``something in quotes'' using plain tex or use \enquote{the enquote command}.
 
-\section{Conclusion}
-We have presented the design and implementation of \ac{ACCPL} as a small and certifiably correct policy language. \ac{ACCPL} is a \ac{pbac} system that can be used to express general access-control rules and policies. In addition we have defined formal semantics for \ac{ACCPL} where we have discovered and added all possible cases when answering a query on whether to allow or deny an action to be performed on an asset. We have subsequently used the Coq Proof Assistant to state theorems about the expected behaviour of \ac{ACCPL} when evaluating a request with respect to a given policy, to develop proofs for those theorems and to machine-check the proofs ensuring correctness guarantees are provided. We have in particular stated, developed and proved correctness results for the semantics of \ac{ACCPL}. 
 
-Additionally, we have described why certain design choices were made and how they contributed to the ease of reasoning for \ac{ACCPL}. Admittedly some expressive power present in other access-control policy languages was omitted from \ac{ACCPL} in order to achieve the reported correctness proofs. For example, in \ac{ACCPL} we only support base policy sets (policy sets that are not composed of other policy sets) i.e., no combining of base policy sets using conjunctions or other combining operators are supported.
-
-\subsection{Related Work}
+\section{Related Work}
 We review here related work and approaches
 to defining semantics for \ac{pbac} based languages.
  
@@ -907,7 +899,7 @@ thus the conflict detection algorithm for XACML is much more complex
 than the one for Cisco firewalls, and resulted in having to consider
 many cases including many subtle corner cases.
 
-\subsection{Future Work}
+\section{Future Work}
 
 
 Our results subsume the above results on conflict detection in the
@@ -924,6 +916,11 @@ Another direction for future work is to explore different ways \ac{ACCPL} could 
 
 Another design goal for \ac{ACCPL} was to make it a target language for deploying policies written in other languages. We could capture, implement and study the semantics of these other policy-based access-control systems using the \ac{ACCPL} translation function framework and ultimately certify the semantics of those languages with respect to their specifications the same way \ac{ACCPL} has been certified correct. 
 %For example, we can take another \ac{pbac} system such as \ac{xrml} and \ac{odrl}, implement them in Coq as additional or (modifications of) existing \ac{ACCPL} constructs, analyze and reason about them, etc. 
+
+\section{Conclusion}
+We have presented the design and implementation of \ac{ACCPL} as a small and certifiably correct policy language. \ac{ACCPL} is a \ac{pbac} system that can be used to express general access-control rules and policies. In addition we have defined formal semantics for \ac{ACCPL} where we have discovered and added all possible cases when answering a query on whether to allow or deny an action to be performed on an asset. We have subsequently used the Coq Proof Assistant to state theorems about the expected behaviour of \ac{ACCPL} when evaluating a request with respect to a given policy, to develop proofs for those theorems and to machine-check the proofs ensuring correctness guarantees are provided. We have in particular stated, developed and proved correctness results for the semantics of \ac{ACCPL}. 
+
+%Additionally, we have described why certain design choices were made and how they contributed to the ease of reasoning for \ac{ACCPL}. Admittedly some expressive power present in other access-control policy languages was omitted from \ac{ACCPL} in order to achieve the reported correctness proofs. For example, in \ac{ACCPL} we only support base policy sets (policy sets that are not composed of other policy sets) i.e., no combining of base policy sets using conjunctions or other combining operators are supported.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
