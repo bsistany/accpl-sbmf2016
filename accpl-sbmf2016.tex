@@ -376,7 +376,7 @@ A policy language based on logic and formal semantics but one that was small and
 %----------------------------------------------------------------------
 
 
-Formal methods help ensure that a system behaves correctly with respect to a specification of its desired behaviour~\cite{TAPL}. This specification of the desired behaviour is what's referred to as \emph{semantics} of the system. Using formal methods requires defining precise and formal semantics, without which analysis and reasoning about properties of the system in question would become impossible. To formalize the semantics of \ac{pbac} languages several approaches have been attempted by various authors. Most are logic based~\cite{Halpern2008,pucella2006} while others are based on finite-automata~\cite{Holzer}, operational semantics based interpreters~\cite{Safavi-naini} and web ontology (from the Knowledge Representation Field)~\cite{Kasten2010MTS}. 
+Formal methods help ensure that a system behaves correctly with respect to a specification of its desired behavior~\cite{TAPL}. This specification of the desired behavior is what's referred to as \emph{semantics} of the system. Using formal methods requires defining precise and formal semantics, without which analysis and reasoning about properties of the system in question would become impossible. To formalize the semantics of \ac{pbac} languages several approaches have been attempted by various authors. Most are logic based~\cite{Halpern2008,pucella2006} while others are based on finite-automata~\cite{Holzer}, operational semantics based interpreters~\cite{Safavi-naini} and web ontology (from the Knowledge Representation Field)~\cite{Kasten2010MTS}. 
 
 
 
@@ -394,7 +394,7 @@ We have designed a policy based access-control language called \ac{ACCPL} based 
 We originally started with a specific subset of~\cite{pucella2006} so that we could concentrate on what we believed to be the essence or core of the language. Initially we intended to maintain the central semantic definitions including ``Closed World Assumptions''~\cite{pucella2006} where the semantics only specify explicitly \syn{Permitted} and \syn{NotPermitted} answers; we discovered, however, that the semantics as stated by Pucella and Weissman~\cite{pucella2006} are not explicit and therefore the decision question that asks whether a request to access a resource may be granted or denied, may not be answered in all cases. We have therefore made major modifications to the semantics of Pucella and Weissman's language such that an answer to a request for access to a resource may be determined unambiguously and for all cases. 
 %
 Specifically, to consider all cases, our program evaluates a request
-against each subpolicy of an agreement and returns one result for
+against each sub-policy of an agreement and returns one result for
 each.  The overall result is a list of decisions.  We define what it
 means to extract a single decision from a list of decisions and show
 that it is always possible to extract a \emph{coherent} decision.  The
@@ -497,7 +497,7 @@ policy's prerequisite holds or not. If the prerequisite holds the
 agreement's user is permitted to perform the action on the agreement's
 asset; otherwise permission is denied. A unique identifier for each
 policy, called the policy identifier (\syn{<policyId>}), is included
-in our definition of the policy construct in order to to help the
+in our definition of the policy construct in order to help the
 translation (from agreements to formulas).  As far as the proofs are
 concerned, however, the policy identifier could be removed without a
 loss to the obtained results.
@@ -918,7 +918,7 @@ Another design goal for \ac{ACCPL} was to make it a target language for deployin
 %For example, we can take another \ac{pbac} system such as \ac{xrml} and \ac{odrl}, implement them in Coq as additional or (modifications of) existing \ac{ACCPL} constructs, analyze and reason about them, etc. 
 
 \section{Conclusion}
-We have presented the design and implementation of \ac{ACCPL} as a small and certifiably correct policy language. \ac{ACCPL} is a \ac{pbac} system that can be used to express general access-control rules and policies. In addition we have defined formal semantics for \ac{ACCPL} where we have discovered and added all possible cases when answering a query on whether to allow or deny an action to be performed on an asset. We have subsequently used the Coq Proof Assistant to state theorems about the expected behaviour of \ac{ACCPL} when evaluating a request with respect to a given policy, to develop proofs for those theorems and to machine-check the proofs ensuring correctness guarantees are provided. We have in particular stated, developed and proved correctness results for the semantics of \ac{ACCPL}. 
+We have presented the design and implementation of \ac{ACCPL} as a small and certifiably correct policy language. \ac{ACCPL} is a \ac{pbac} system that can be used to express general access-control rules and policies. In addition we have defined formal semantics for \ac{ACCPL} where we have discovered and added all possible cases when answering a query on whether to allow or deny an action to be performed on an asset. We have subsequently used the Coq Proof Assistant to state theorems about the expected behavior of \ac{ACCPL} when evaluating a request with respect to a given policy, to develop proofs for those theorems and to machine-check the proofs ensuring correctness guarantees are provided. We have in particular stated, developed and proved correctness results for the semantics of \ac{ACCPL}. 
 
 %Additionally, we have described why certain design choices were made and how they contributed to the ease of reasoning for \ac{ACCPL}. Admittedly some expressive power present in other access-control policy languages was omitted from \ac{ACCPL} in order to achieve the reported correctness proofs. For example, in \ac{ACCPL} we only support base policy sets (policy sets that are not composed of other policy sets) i.e., no combining of base policy sets using conjunctions or other combining operators are supported.
 
