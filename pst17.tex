@@ -296,7 +296,7 @@ specified conditions in those policies must be evaluated with respect
 to environmental facts. In the \ac{drm} realm with its focus on usage
 control, the kinds of facts that are typically tracked in the
 environment include a count of how many times an asset has been
-accessed, or perhaps the amount a user has paid to access an asset. In \ac{ACCPL}, agreements and facts (i.e. environments) will
+accessed, or perhaps the amount a subject has paid to access an asset. In \ac{ACCPL}, agreements and facts (i.e. environments) will
 refer to a count of how many times each policy should be used and has
 been used respectively, to justify an action.
 Although our core language includes only one kind of fact, we choose
@@ -354,21 +354,21 @@ the prerequisite ``holds'' the policy is taken into
 consideration. Otherwise the policy will not be looked at. Some
 primitive policy sets are specified as inclusive as opposed to others
 that are explicitly specified as exclusive. Primitive exclusive policy
-sets are exclusive to an agreement's users in that only those users
+sets are exclusive to subjects of an agreement (specified in the agreement's principal \syn{<prin>}) in that only those subjects
 may perform the actions specified in the policy set. The implication
-is that all other users who are not specified in the agreement's
+is that all other subjects who are not specified in the agreement's
 principal are forbidden from performing the specified actions, no
 matter whether the prerequisite holds or not. Not surprisingly, we also
 define primitive inclusive policy sets that don't enforce any
-exclusivity to the agreement's users.
+exclusivity to the subjects in the agreement's principal.
 
 A policy is made up of primitive policies. Primitive policies are
 grouped together using the conjunction combining operator, specified
 by the keyword \syn{and} in front of the list of the primitive
 policies, which are separated by commas. A primitive policy specifies
 an action to be performed on an asset, depending on whether the
-policy's prerequisite holds or not. If the prerequisite holds the
-agreement's user is permitted to perform the action on the agreement's
+policy's prerequisite holds or not. If the prerequisite holds the subjects in the
+agreement's principal are permitted to perform the action on the agreement's
 asset; otherwise permission is denied. A unique identifier for each
 policy, called the policy identifier (\syn{<policyId>}), is included
 in our definition of the policy construct in order to help the
@@ -381,7 +381,7 @@ closed under the conjunction operator. In \ac{ACCPL}, a
 \syn{<primPrerequisite>} is either \syn{True} or it is a
 \syn{<constraint>}. The \syn{True} prerequisite always holds. A
 constraint is an intrinsic part of a policy and cannot be influenced
-by an agreement's users. A constraint can also be negative, specified
+by an agreement's principal. A constraint can also be negative, specified
 by the keyword \syn{not} in front of \syn{<constraint>}.
 
 Constraints are either of the principal kind, the count kind, or the
@@ -392,11 +392,11 @@ count by principle kind.
 %Bahman, check if the sentence below is correct, and fix the rest of
 %the paragraph below the ``%''.
 Principal constraints require matching the list of subjects making up
-the \syn{<prin>} in the agreement to those in the \syn{<prin>} of the
+the agreement's principle (\syn{<prin>}) to those in the principle (\syn{<prin>}) of the
 constraint.
 %
-For example, the constraint of ``the user being Alice'' is a
-constraint of the principal kind. A count constraint refers to the
+For example, the constraint of ``the only subject being Alice'' is a
+constraint of the principal kind - which needs to match the agreement's principal for the action to be performed on the asset. A count constraint refers to the
 number of times the user of an agreement has invoked policies to
 justify her actions whereas a count by principal constraint is
 concerned with how many times a principal (not the user) has invoked
