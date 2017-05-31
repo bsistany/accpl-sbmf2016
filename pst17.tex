@@ -175,8 +175,11 @@ To motivate the design of \ac{ACCPL}, let us review the definition of
 decision about whether to permit or deny access to a resource or asset
 of interest, hence the term ``access-control.''
 
-Although various access-control models exist, to harmonize access control in large environments with many subjects and objects and disparate attributes, the \ac{pbac}~\cite{nist} model has been proposed. \ac{pbac} allows for a uniform and central access-control model among the various organizational units. There is also a need for large organizations to put in place mechanisms so that access-control rules can be easily audited. This calls for a data-driven approach to access-control where the data, in this case the access-control rules, are available to read and analyze. 
-
+Although various access-control models exist, to 
+%harmonize access control in large environments with many subjects and objects and disparate attributes, the \ac{pbac}~\cite{nist} model has been proposed. \ac{pbac} allows for a uniform and central access-control model among the various organizational units. There is also a need for large organizations to put in place mechanisms so that access-control rules can be easily audited. This calls for a data-driven approach to access-control where the data, in this case the access-control rules, are available to read and analyze. 
+harmonize access control in large environments with many subjects and objects and disparate attributes, \ac{pbac}~\cite{nist} model has been proposed. \ac{pbac} allows for a more uniform access-control model across the system. \ac{pbac} systems help create and enforce policies
+that define who should have access to what resources, and under what circumstances.
+There is also a need for large organizations to put in place mechanisms such that access-control rules can be easily audited. This calls for a data-driven approach to access-control where the data, in this case the access-control rules, are available to read and analyze. A data-driven approach like \ac{pbac} additionally helps with modularity of the system as changes in access control rules will have almost no impact to the underlying system the rules are meant to protect.
 
 Because of the cited advantages, along with its generality and
 widespread use, \ac{pbac} is the model \ac{ACCPL} implements.
