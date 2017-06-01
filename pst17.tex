@@ -501,19 +501,19 @@ agreement
 %\end{minipage}
 %
 
-The same agreement is also illustrated below using \ac{odrl}'s XML-based syntax.  %\lstset{language=XML}
+For purposes of comparison, the same agreement is also illustrated below using \ac{odrl}'s XML-based syntax.  %\lstset{language=XML}
 \lstset{language=Pucella2006, captionpos=b}%\begin{minipage}[c]{0.95\textwidth}\begin{lstlisting}<agreement> <asset> <context> <uid> The Report </uid> </context> </asset> <permission>   <print>    <constraint> <name> Alice </name> </constraint>    <constraint> <count> 2 </count> </constraint>   </print> </permission> <party> <context> <name> Alice </name> </context> </party> <party> <context> <name> Bob </name> </context> </party></agreement>\end{lstlisting}%\caption{First Agreement for Alice and Bob in XML}%\label{fig:agreementinxml}%\end{figure}%\end{minipage} 
 
 
-
-
 Figures~\ref{fig:agreementincoq} and~\ref{fig:agreementincoq2}
-show the example agreement's encoding in Coq. In these figures, \syn{Single} builds a Coq
+show the example agreement's encoding and representation, respectively, in Coq.
+
+As shown in Figure~\ref{fig:agreementincoq}, \syn{Single} builds a Coq
 list containing one element, while \syn{NewList} is the ``cons''
 operator, forming a new list by adding a new element on to the front
 of an existing list.  Nonempty lists can also be written as elements
 separated by commas inside brackets, while regular lists (as defined in
-the Coq library) can with written with a semicolon as the separator.
+the Coq library) can be written with a semicolon as the separator.
 
 \lstset{language=Coq, captionpos=b}
 %\begin{minipage}[c]{0.95\textwidth}
